@@ -9,12 +9,12 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 5f;
     public float crouchSpeed = 2.5f; // Velocidad al agacharse
     public float jumpForce = 7f;
-    public float rotationSpeed = 5f; // Velocidad de rotación suave
     public Transform groundCheck;
     public LayerMask groundMask;
 
     private bool isGrounded;
     private bool isCroushed;
+    private bool canRotateCamera = false; // Agregar esta variable para controlar la rotación de la cámara
     private Vector3 movementDirection; // Guarda la dirección del movimiento
 
     private Quaternion targetRotation; // Almacena la rotación objetivo
@@ -48,13 +48,6 @@ public class PlayerMovement : MonoBehaviour
         // Calcular el movimiento basado en la dirección de la cámara
         movementDirection = cameraForward.normalized * Input.GetAxis("Vertical") +
                             Camera.main.transform.right.normalized * Input.GetAxis("Horizontal");
-
-        // Calcular la rotación hacia la dirección del movimiento
-        if (movementDirection != Vector3.zero)
-        {
-            targetRotation = Quaternion.LookRotation(movementDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-        }
 
         if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask))
         {
@@ -132,6 +125,11 @@ public class PlayerMovement : MonoBehaviour
         speed = 2.75f; // Restablecer velocidad al dejar de agacharse
         animator.SetBool("Agacharse", false);
         isCroushed = false;
+    }
+
+    public void SetCameraRotationEnabled(bool isEnabled)
+    {
+        canRotateCamera = isEnabled;
     }
 
     private void OnTriggerEnter(Collider other)

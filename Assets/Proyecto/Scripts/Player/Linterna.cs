@@ -15,15 +15,18 @@ public class Linterna : MonoBehaviour
     private Image batteryImage;
     private bool isOn;
 
+    private Inventario inventario;
     // Start is called before the first frame update
     void Start()
     {
-        linternaObject = GameObject.Find("Linterna");
+        linternaObject = GameObject.Find("LinternaLight");
         linternaObject.SetActive(false);
 
         linternaAudio = GameObject.Find("LinternaAudio").GetComponent<AudioSource>();
 
         batteryImage = GameObject.Find("BatteryCharge").GetComponent<Image>();
+
+        inventario = FindObjectOfType<Inventario>();
     }
 
     // Update is called once per frame
@@ -43,6 +46,12 @@ public class Linterna : MonoBehaviour
             {
                 isOn = false;
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && inventario.pilasActuales > 0)
+        {
+            inventario.GastarPila();
+            RechargeBatery();
         }
 
         if (isOn)
