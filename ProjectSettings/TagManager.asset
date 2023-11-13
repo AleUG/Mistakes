@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Pila
   - Door
+  - Key
   layers:
   - Default
   - TransparentFX

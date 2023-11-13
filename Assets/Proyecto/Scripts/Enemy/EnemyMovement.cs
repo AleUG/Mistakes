@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -18,12 +19,17 @@ public class EnemyMovement : MonoBehaviour
     public bool canAttack;
     public bool isActive = true;
 
+    private EnemyAI enemyAI;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
-
         originalMoveSpeed = moveSpeed;
+
+        // Agrega esta línea para obtener el componente EnemyAI
+        enemyAI = GetComponent<EnemyAI>();
+        enemyAI.enabled = false;
     }
 
     void FixedUpdate()
@@ -39,12 +45,8 @@ public class EnemyMovement : MonoBehaviour
             {
                 if (directionToPlayer.magnitude <= followDistance)
                 {
-                    // Código para seguir al jugador
-                    Vector3 moveDirection = directionToPlayer.normalized;
-                    transform.position += moveDirection * moveSpeed * Time.deltaTime;
-                    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-                    animator.SetBool("Walk", true);
+                    // Desactiva el movimiento directo
+                    enemyAI.enabled = true;
 
                     if (directionToPlayer.magnitude <= attackDistance && canAttack == true)
                     {
@@ -61,6 +63,9 @@ public class EnemyMovement : MonoBehaviour
                 {
                     animator.SetBool("Walk", false);
                     animator.SetBool("Ataque", false);
+
+                    // Activa el movimiento AI
+                    enemyAI.enabled = true;
                 }
             }
             else

@@ -46,8 +46,8 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
 
         // Calcular el movimiento basado en la dirección de la cámara
-        movementDirection = cameraForward.normalized * Input.GetAxis("Vertical") +
-                            Camera.main.transform.right.normalized * Input.GetAxis("Horizontal");
+        movementDirection = cameraForward.normalized * Input.GetAxisRaw("Vertical") +
+                            Camera.main.transform.right.normalized * Input.GetAxisRaw("Horizontal");
 
         if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask))
         {
@@ -93,6 +93,8 @@ public class PlayerMovement : MonoBehaviour
                 nextStepTime = Time.time + stepInterval;
             }
 
+
+           
             // Mover al jugador en la dirección del movimiento
             transform.position = transform.position + movementDirection * speed * Time.fixedDeltaTime;
 
@@ -122,14 +124,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void DejarDeAgacharse()
     {
-        speed = 2.75f; // Restablecer velocidad al dejar de agacharse
+        speed = 2.25f; // Restablecer velocidad al dejar de agacharse
         animator.SetBool("Agacharse", false);
         isCroushed = false;
-    }
-
-    public void SetCameraRotationEnabled(bool isEnabled)
-    {
-        canRotateCamera = isEnabled;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -137,7 +134,6 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Escalera"))
         {
             rb.useGravity = false;
-            speed = 6f;
         }
     }
 
@@ -146,7 +142,6 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Escalera"))
         {
             rb.useGravity = true;
-            speed = 5f;
         }
     }
 }

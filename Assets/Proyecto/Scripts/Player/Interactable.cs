@@ -14,8 +14,9 @@ public class Interactable : MonoBehaviour
     public bool isArmario;
     public bool isPila;
     public bool isDoor;
+    public bool isKey;
 
-    private bool isOpen = false; // Mover la declaración de la variable fuera del método
+    private bool isOpen = false;
 
     private Animator animator;
     private Inventario inventario;
@@ -24,33 +25,11 @@ public class Interactable : MonoBehaviour
     {
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
-
         inventario = FindObjectOfType<Inventario>();
     }
 
     private void Update()
     {
-        if (isArmario)
-        {
-            if (isEnter)
-            {
-                playerMovement.enabled = false;
-
-                // Bloquear la rotación de la cámara del jugador.
-                playerMovement.SetCameraRotationEnabled(false);
-
-                virtualCamera.gameObject.SetActive(true);
-            }
-            else
-            {
-                playerMovement.enabled = true;
-
-                // Habilitar la rotación de la cámara del jugador.
-                playerMovement.SetCameraRotationEnabled(true);
-
-                virtualCamera.gameObject.SetActive(false);
-            }
-        }
 
     }
 
@@ -60,16 +39,29 @@ public class Interactable : MonoBehaviour
         {
             animator.SetTrigger("Open");
 
-            if (!isEnter)
+            if (isEnter == true)
+            {
+                playerMovement.enabled = false;
+
+                virtualCamera.gameObject.SetActive(true);
+            }
+            else if (isEnter == false)
+            {
+                playerMovement.enabled = true;
+
+                virtualCamera.gameObject.SetActive(false);
+            }
+
+            if (isEnter == false)
             {
                 isEnter = true;
             }
-            else
+            else if (isEnter == true)
             {
                 isEnter = false;
             }
-        }
 
+        }
     }
 
     public void InteractPila()
@@ -77,6 +69,22 @@ public class Interactable : MonoBehaviour
         if (isPila && inventario.pilasActuales < inventario.pilasMáximas)
         {
             inventario.RecogerPila(1);
+            gameObject.SetActive(false);
+            Destroy(gameObject, 2.0f);
+        }
+    }
+
+    public void InteractKey()
+    {
+        if (isKey)
+        {
+            // Aquí, deberías activar la mecánica de llaves y puertas bloqueadas.
+            Key keyScript = GetComponent<Key>();
+            if (keyScript != null)
+            {
+                keyScript.Interact(); // Agrega un método en la clase Key para manejar la interacción.
+            }
+
             gameObject.SetActive(false);
             Destroy(gameObject, 2.0f);
         }
@@ -98,6 +106,23 @@ public class Interactable : MonoBehaviour
                 animatorDoor.SetTrigger("Open");
                 isOpen = true;
             }
+        }
+    }
+
+    // Nuevo método para obtener los materiales asignados.
+    public Material[] GetAssignedMaterials()
+    {
+        // Puedes personalizar esta lógica según el tipo de objeto interactuable.
+        // En este ejemplo, simplemente devolvemos los materiales del primer renderer.
+        Renderer renderer = GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            return renderer.materials;
+        }
+        else
+        {
+            // Devuelve un array vacío si no hay renderer.
+            return new Material[0];
         }
     }
 }

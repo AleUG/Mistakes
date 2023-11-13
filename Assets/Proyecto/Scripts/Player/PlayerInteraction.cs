@@ -1,100 +1,108 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float interactionRange = 2f; // Rango de interacción.
-    public LayerMask interactableLayer; // Capa de objetos interactuables.
-    public Transform playerCamera; // La cámara del jugador.
-    public Material interactableMaterial; // Material Shader Graph interactuable.
+    public float interactionRange = 2f;
+    public LayerMask interactableLayer;
+    public Transform playerCamera;
+    public Material interactableMaterial;
     private GameObject textInteract;
 
-    private Dictionary<Renderer, Material[]> originalMaterials = new Dictionary<Renderer, Material[]>();
-    private Renderer lastInteractedRenderer;
+    private List<Interactable> interactablesInRange = new List<Interactable>();
+    private Dictionary<Renderer, List<Material>> originalMaterials = new Dictionary<Renderer, List<Material>>();
 
     private void Start()
     {
-
         textInteract = GameObject.Find("TextInteract");
         textInteract.SetActive(false);
     }
 
     private void Update()
     {
-        // Lanzar un rayo desde la cámara del jugador en la dirección en la que está mirando.
         if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, interactionRange, interactableLayer))
         {
             textInteract.SetActive(true);
 
-            if (lastInteractedRenderer != null)
-            {
-                // Restablece los materiales del último objeto interactuable.
-                RestoreOriginalMaterials(lastInteractedRenderer);
-                lastInteractedRenderer = null;
-            }
-
-            // El rayo golpeó un objeto interactuable.
             Interactable interactableObject = hit.collider.GetComponent<Interactable>();
 
-            if (interactableObject != null)
+            if (interactableObject != null && !interactablesInRange.Contains(interactableObject))
             {
-                Renderer[] renderers = hit.collider.GetComponentsInChildren<Renderer>();
+                interactablesInRange.Add(interactableObject);
+                UpdateMaterials(interactableObject, true);
+            }
 
-                foreach (Renderer renderer in renderers)
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                foreach (Interactable interactable in interactablesInRange)
                 {
-                    if (!originalMaterials.ContainsKey(renderer))
+                    if (interactable.CompareTag("Pila"))
                     {
-                        originalMaterials.Add(renderer, renderer.materials);
+                        interactable.InteractPila();
                     }
-
-                    Material[] materials = renderer.materials;
-
-                    // Asegura que haya suficientes elementos en el array de materiales.
-                    Array.Resize(ref materials, materials.Length + 1);
-
-                    Material clonedMaterial = new Material(interactableMaterial);
-                    clonedMaterial.SetFloat("_Scale", 1.05f);
-
-                    materials[materials.Length - 1] = clonedMaterial; // Agrega el material al final del array.
-
-                    renderer.materials = materials;
-                }
-
-                lastInteractedRenderer = renderers[0];
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    if (interactableObject.CompareTag("Pila"))
+                    else if (interactable.CompareTag("Door"))
                     {
-                        interactableObject.InteractPila();
+                        interactable.InteractDoor();
                     }
-                    else if (interactableObject.CompareTag("Door"))
+                    else if (interactable.CompareTag("Key"))
                     {
-                        interactableObject.InteractDoor();
+                        interactable.InteractKey();
                     }
                     else
                     {
-                        interactableObject.InteractArmario();
+                        interactable.InteractArmario();
                     }
+
                 }
             }
         }
-        else if (lastInteractedRenderer != null)
+        else
         {
-            // Restablece los materiales del último objeto interactuable cuando no se mira ninguno.
-            RestoreOriginalMaterials(lastInteractedRenderer);
-            lastInteractedRenderer = null;
             textInteract.SetActive(false);
+
+            foreach (Interactable interactable in interactablesInRange)
+            {
+                UpdateMaterials(interactable, false);
+            }
+
+            interactablesInRange.Clear();
         }
     }
 
-    private void RestoreOriginalMaterials(Renderer renderer)
+    private void UpdateMaterials(Interactable interactable, bool applyMaterial)
     {
-        Material[] original = originalMaterials[renderer];
-        renderer.materials = original;
+        Renderer[] renderers = interactable.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            if (!originalMaterials.ContainsKey(renderer))
+            {
+                originalMaterials.Add(renderer, new List<Material>(renderer.materials));
+            }
+
+            List<Material> materials = originalMaterials[renderer];
+
+            if (applyMaterial)
+            {
+                Material clonedMaterial = new Material(interactableMaterial);
+                clonedMaterial.SetFloat("_Scale", 1.05f);
+                materials.Add(clonedMaterial);
+            }
+            else
+            {
+                // Remove the last material (the one added during interaction)
+                if (materials.Count > 0)
+                {
+                    Material lastMaterial = materials[materials.Count - 1];
+                    materials.Remove(lastMaterial);
+                    Destroy(lastMaterial); // Destroy the cloned material
+                }
+            }
+
+            renderer.materials = materials.ToArray();
+        }
     }
+
 
     private void OnDrawGizmos()
     {
@@ -102,5 +110,3 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + playerCamera.forward * interactionRange);
     }
 }
-
-
