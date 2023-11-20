@@ -18,6 +18,9 @@ public class Interactable : MonoBehaviour
 
     private bool isOpen = false;
 
+    private AudioSource audioDoorOpen;
+    private AudioSource audioDoorClose;
+
     private Animator animator;
     private Inventario inventario;
 
@@ -26,6 +29,10 @@ public class Interactable : MonoBehaviour
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
         inventario = FindObjectOfType<Inventario>();
+
+        //AudioSources
+        audioDoorOpen = GameObject.Find("DoorAudioOpen").GetComponent<AudioSource>();
+        audioDoorClose = GameObject.Find("DoorAudioClose").GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -100,11 +107,13 @@ public class Interactable : MonoBehaviour
             {
                 animatorDoor.SetTrigger("Close");
                 isOpen = false;
+                audioDoorClose.Play();
             }
             else
             {
                 animatorDoor.SetTrigger("Open");
                 isOpen = true;
+                audioDoorOpen.Play();
             }
         }
     }

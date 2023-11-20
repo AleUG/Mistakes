@@ -16,6 +16,13 @@ public class Linterna : MonoBehaviour
     private bool isOn;
 
     private Inventario inventario;
+
+    // Valor de desesperación
+    private float desesperacion = 0.0f;
+    public float aumentoDesesperacionPorSegundo = 0.1f;
+    public float reduccionDesesperacionPorSegundo = 0.2f; // Nueva tasa de reducción de desesperación
+    public float umbralDesesperacion = 0.8f; // Punto de desesperación crítica
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +48,10 @@ public class Linterna : MonoBehaviour
             if (linternaObject.activeSelf)
             {
                 isOn = true;
+
+                // Añade la línea para reducir la desesperación mientras la linterna está encendida
+                desesperacion -= reduccionDesesperacionPorSegundo * Time.deltaTime;
+                desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
             }
             else
             {
@@ -60,6 +71,10 @@ public class Linterna : MonoBehaviour
             batteryCharge -= batteryDrainRate * Time.deltaTime;
             batteryCharge = Mathf.Clamp01(batteryCharge); // Asegura que la carga esté en el rango [0, 1]
 
+            // Añade la línea para reducir la desesperación mientras la linterna está encendida
+            desesperacion -= reduccionDesesperacionPorSegundo * Time.deltaTime;
+            desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
+
             // Actualiza la imagen de la batería en el Canvas
             batteryImage.fillAmount = batteryCharge;
 
@@ -68,6 +83,19 @@ public class Linterna : MonoBehaviour
                 // Si la batería está agotada, apaga la linterna
                 isOn = false;
                 linternaObject.SetActive(false);
+            }
+        }
+        else
+        {
+            // Incrementa la desesperación mientras la linterna está apagada
+            desesperacion += aumentoDesesperacionPorSegundo * Time.deltaTime;
+            desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
+
+            // Verifica si la desesperación supera el umbral crítico
+            if (desesperacion >= umbralDesesperacion)
+            {
+                // Imprime un mensaje de desesperación crítica en la consola
+                Debug.Log("¡Estás desesperado! ¡Enciende la linterna para sentirte más seguro!");
             }
         }
     }

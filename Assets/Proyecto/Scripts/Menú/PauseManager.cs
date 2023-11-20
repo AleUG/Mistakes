@@ -9,7 +9,6 @@ public class PauseManager : MonoBehaviour
     private void Start()
     {
         ResumeGame(); // Inicia el juego sin pausa
-
     }
 
     private void Update()

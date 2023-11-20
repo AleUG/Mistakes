@@ -14,16 +14,16 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded;
     private bool isCroushed;
-    private bool canRotateCamera = false; // Agregar esta variable para controlar la rotación de la cámara
     private Vector3 movementDirection; // Guarda la dirección del movimiento
 
-    private Quaternion targetRotation; // Almacena la rotación objetivo
     private Rigidbody rb;
     private Animator animator;
     public AudioSource[] pasosSound;
 
     private float stepInterval = 0.55f; // Intervalo de tiempo entre pasos
     private float nextStepTime; // Siguiente momento para reproducir un paso
+
+    public bool canMove = true;
 
     private void Start()
     {
@@ -37,48 +37,49 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Obtener la dirección en la que mira la cámara
-        Vector3 cameraForward = Camera.main.transform.forward;
-        cameraForward.y = 0f; // Para evitar que el jugador salte hacia arriba
+            // Obtener la dirección en la que mira la cámara
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f; // Para evitar que el jugador salte hacia arriba
 
-        // Rotar al jugador solo alrededor del eje Y (vertical) en función de la dirección de la cámara
-        Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-        transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
+            // Rotar al jugador solo alrededor del eje Y (vertical) en función de la dirección de la cámara
+            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+            transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
 
-        // Calcular el movimiento basado en la dirección de la cámara
-        movementDirection = cameraForward.normalized * Input.GetAxisRaw("Vertical") +
-                            Camera.main.transform.right.normalized * Input.GetAxisRaw("Horizontal");
+            // Calcular el movimiento basado en la dirección de la cámara
+            movementDirection = cameraForward.normalized * Input.GetAxisRaw("Vertical") +
+                                Camera.main.transform.right.normalized * Input.GetAxisRaw("Horizontal");
 
-        if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask))
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-
-            // Detener todos los sonidos de pasos al saltar
-            foreach (var pasosAudio in pasosSound)
+            if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask))
             {
-                pasosAudio.Stop();
+                isGrounded = true;
             }
-        }
+            else
+            {
+                isGrounded = false;
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
+                // Detener todos los sonidos de pasos al saltar
+                foreach (var pasosAudio in pasosSound)
+                {
+                    pasosAudio.Stop();
+                }
+            }
 
-        // Agacharse mientras se mantiene presionado Left Control
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            Agacharse();
-        }
-        else
-        {
-            DejarDeAgacharse();
-        }
+            if (isGrounded && Input.GetButtonDown("Jump"))
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            }
+
+            // Agacharse mientras se mantiene presionado Left Control
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                Agacharse();
+            }
+            else
+            {
+                DejarDeAgacharse();
+            }
     }
+        
 
     private void FixedUpdate()
     {
@@ -134,6 +135,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Escalera"))
         {
             rb.useGravity = false;
+            Debug.Log("Accedió a escalera");
         }
     }
 

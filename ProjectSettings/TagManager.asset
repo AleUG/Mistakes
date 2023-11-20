@@ -9,6 +9,7 @@ TagManager:
   - Pila
   - Door
   - Key
+  - Escalera
   layers:
   - Default
   - TransparentFX
