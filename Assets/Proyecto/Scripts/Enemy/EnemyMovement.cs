@@ -86,4 +86,24 @@ public class EnemyMovement : MonoBehaviour
         isAttacking = false;
         isCooldown = false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Door"))
+        {
+            Animator doorAnimator = other.GetComponent<Animator>();
+            Interactable interactDoor = other.GetComponent<Interactable>();
+
+            if (doorAnimator != null)
+            {
+                doorAnimator.SetTrigger("Open");
+                interactDoor.isOpen = true;
+            }
+            else
+            {
+                interactDoor.isOpen = false;
+            }
+        }
+    }
+
 }

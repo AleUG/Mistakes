@@ -4,21 +4,38 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    private bool isLocked = true;
+    public bool isLocked = true;
+    private Key currentKey; // Llave actual asociada a la puerta
+
+    private void Update()
+    {
+        // Verifica si el jugador está interactuando con la puerta (por ejemplo, presionando la tecla E)
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // Llama al método Unlock solo si la puerta está bloqueada y la llave pertenece a esta puerta
+            if (isLocked && CheckKey())
+            {
+                Unlock();
+            }
+        }
+    }
+
+    private bool CheckKey()
+    {
+        // Verifica si la llave actual existe y está asociada a esta puerta
+        return currentKey != null && currentKey.hasKey && currentKey.associatedDoor == this;
+    }
+
+    public void SetKey(Key key)
+    {
+        // Establece la llave asociada a la puerta
+        currentKey = key;
+    }
 
     public void Unlock()
     {
         isLocked = false;
         // Puedes agregar aquí animaciones u otros efectos para indicar que la puerta está desbloqueada.
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && !isLocked)
-        {
-            // El jugador puede atravesar la puerta porque está desbloqueada
-            // Puedes agregar aquí animaciones u otros efectos para abrir la puerta.
-            Debug.Log("Puerta abierta");
-        }
+        Debug.Log("La puerta ha sido desbloqueada.");
     }
 }

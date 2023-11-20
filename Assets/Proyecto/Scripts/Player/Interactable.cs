@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
@@ -16,7 +14,7 @@ public class Interactable : MonoBehaviour
     public bool isDoor;
     public bool isKey;
 
-    private bool isOpen = false;
+    public bool isOpen = false;
 
     private AudioSource audioDoorOpen;
     private AudioSource audioDoorClose;
@@ -102,14 +100,23 @@ public class Interactable : MonoBehaviour
         if (isDoor)
         {
             Animator animatorDoor = GetComponent<Animator>();
+            Door door = GetComponent<Door>();
 
-            if (isOpen)
+            // Verifica si la puerta está cerrada con llave.
+            if (door.isLocked)
+            {
+                Debug.Log("La puerta está cerrada con llave. Necesitas una llave para abrirla.");
+                animatorDoor.SetTrigger("Force");
+                return;
+            }
+
+            if (isOpen == true)
             {
                 animatorDoor.SetTrigger("Close");
                 isOpen = false;
                 audioDoorClose.Play();
             }
-            else
+            else if (isOpen == false)
             {
                 animatorDoor.SetTrigger("Open");
                 isOpen = true;

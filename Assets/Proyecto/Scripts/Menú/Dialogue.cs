@@ -20,7 +20,7 @@ public class Dialogue : MonoBehaviour
     private int lineIndex;
     private Coroutine typingCoroutine;
 
-    private float typingTime = 0.05f;
+    [SerializeField] float typingTime = 0.05f;
 
     private PlayerMovement playerMovement;
 
@@ -49,6 +49,7 @@ public class Dialogue : MonoBehaviour
 
         if (isDialogueInProgress && isWriting)
         {
+            /*
             if (lineIndex < dialogueGroups[currentGroupIndex].dialogueLines.Length - 1)
             {
                 NextDialogueLine();
@@ -57,11 +58,13 @@ public class Dialogue : MonoBehaviour
             {
                 StartCoroutine(DelayAndEndDialogue());
             }
+            */
         }
     }
 
     private void StartDialogue()
     {
+        isPlayerRange = false;
         isDialogueInProgress = true;
 
         dialoguePanel.SetActive(true);
@@ -74,22 +77,28 @@ public class Dialogue : MonoBehaviour
         }
 
         lineIndex = 0; // Iniciar con el primer elemento del grupo actual
-
         typingCoroutine = StartCoroutine(ShowLines());
     }
 
     private void NextDialogueLine()
     {
-        StartCoroutine(DelayTime());
+        if(lineIndex +1 >= dialogueGroups[currentGroupIndex].dialogueLines.Length)
+        {
+            EndDialogue();
+            return ;
+        }
+        else { 
+            StartCoroutine(DelayTime());
+        }
     }
 
     private IEnumerator ShowLines()
     {
         isWriting = true;
-
-        foreach (char ch in dialogueGroups[currentGroupIndex].dialogueLines[lineIndex])
+        
+        for (int i = 0; i < dialogueGroups[currentGroupIndex].dialogueLines[lineIndex].Length; i++)
         {
-            dialogueText.text += ch;
+            dialogueText.text += dialogueGroups[currentGroupIndex].dialogueLines[lineIndex][i];
 
             if (typeSound != null && audioSource != null)
             {
@@ -99,8 +108,11 @@ public class Dialogue : MonoBehaviour
             yield return new WaitForSeconds(typingTime);
         }
 
+
+
         isWriting = false;
 
+        /*
         if (playerMovement != null && lineIndex == dialogueGroups[currentGroupIndex].dialogueLines.Length - 1)
         {
             playerMovement.canMove = true;
@@ -110,6 +122,9 @@ public class Dialogue : MonoBehaviour
         {
             StartCoroutine(DelayAndEndDialogue());
         }
+        */
+
+        NextDialogueLine();
     }
 
     private IEnumerator DelayTime()
@@ -130,7 +145,7 @@ public class Dialogue : MonoBehaviour
 
     private void EndDialogue()
     {
-        isDialogueInProgress = false;
+        StartCoroutine(DelayAndEndDialogue());
         dialoguePanel.SetActive(false);
         boxCollider.enabled = true;
 
@@ -162,9 +177,10 @@ public class Dialogue : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
+        /*
         if (collision.gameObject.CompareTag("Player"))
         {
             isPlayerRange = false;
-        }
+        }*/
     }
 }

@@ -19,9 +19,17 @@ public class Linterna : MonoBehaviour
 
     // Valor de desesperación
     private float desesperacion = 0.0f;
-    public float aumentoDesesperacionPorSegundo = 0.1f;
-    public float reduccionDesesperacionPorSegundo = 0.2f; // Nueva tasa de reducción de desesperación
+    public float aumentoDesesperacionPorSegundo = 0.05f;
+    public float reduccionDesesperacionPorSegundo = 0.25f; // Nueva tasa de reducción de desesperación
     public float umbralDesesperacion = 0.8f; // Punto de desesperación crítica
+    public AudioSource audioPulsaciones;
+
+    //SpawnEnemy
+    public List<Collider> colliders;
+    private bool enemigoAparecido = false;
+    public GameObject enemigoPrefab;
+    public float probabilidadAparicionEnemigo = 0.75f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -92,17 +100,68 @@ public class Linterna : MonoBehaviour
             desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
 
             // Verifica si la desesperación supera el umbral crítico
-            if (desesperacion >= umbralDesesperacion)
+            if (!enemigoAparecido && desesperacion >= umbralDesesperacion)
             {
                 // Imprime un mensaje de desesperación crítica en la consola
                 Debug.Log("¡Estás desesperado! ¡Enciende la linterna para sentirte más seguro!");
+
+                // Decide si el enemigo debe aparecer
+                float randomValue = Random.value;
+                if (desesperacion == 1.0f || randomValue <= probabilidadAparicionEnemigo)
+                {
+                    // Aparece el enemigo
+                    SpawnEnemigo();
+                    enemigoAparecido = true;  // Marca que el enemigo ya ha aparecido
+                }
             }
         }
+
+        // Verifica si la desesperación está por debajo del 80%
+        if (desesperacion < umbralDesesperacion)
+        {
+            EliminarAlucinaciones();
+        }
+
     }
 
     public void RechargeBatery()
     {
         batteryCharge = 1.0f;
         batteryImage.fillAmount = batteryCharge;
+    }
+
+    // Método para instanciar un enemigo
+    void SpawnEnemigo()
+    {
+        if (colliders.Count > 0)
+        {
+            // Escoge un collider aleatorio de la lista
+            Collider randomCollider = colliders[Random.Range(0, colliders.Count)];
+
+            // Usa la posición del centro del collider como posición de aparición
+            Vector3 spawnPosition = randomCollider.bounds.center;
+
+            // Instancia el enemigo en la posición especificada
+            Instantiate(enemigoPrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            // Si no hay colliders en la lista, utiliza una posición aleatoria como respaldo
+            Vector3 spawnPosition = new Vector3(transform.position.x + 5f, transform.position.y, transform.position.z);
+            Instantiate(enemigoPrefab, spawnPosition, Quaternion.identity);
+        }
+    }
+
+    // Método para destruir todos los enemigos en la escena
+    void EliminarAlucinaciones()
+    {
+        GameObject[] enemigos = GameObject.FindGameObjectsWithTag("Alucinación"); // Asigna el tag correcto a tus enemigos
+
+        foreach (GameObject enemigo in enemigos)
+        {
+            Destroy(enemigo);
+        }
+
+        enemigoAparecido = false;  // Restablece la variable para permitir futuras apariciones
     }
 }

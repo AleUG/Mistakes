@@ -10,6 +10,7 @@ TagManager:
   - Door
   - Key
   - Escalera
+  - "Alucinaci\xF3n"
   layers:
   - Default
   - TransparentFX
