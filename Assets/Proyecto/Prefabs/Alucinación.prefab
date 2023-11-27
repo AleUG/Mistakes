@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 4644394300316516759}
   - component: {fileID: 140011762297908000}
   - component: {fileID: 6418595726065378151}
+  - component: {fileID: 6157605124750311490}
   m_Layer: 0
   m_Name: "Alucinaci\xF3n"
   m_TagString: "Alucinaci\xF3n"
@@ -149,8 +150,8 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8020160383712319719}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
+  m_IsTrigger: 1
+  m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -183,10 +184,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9b91884931b7e41963d928a6fda7c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalMoveSpeed: 1.5
-  moveSpeed: 1.5
+  originalMoveSpeed: 5
+  moveSpeed: 5
   followDistance: 5
-  rotationSpeed: 10
+  rotationSpeed: 20
   attackDistance: 2
   attackCooldown: 0.5
   canAttack: 0
@@ -225,4 +226,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176a7b2c647218841b700f1130feb479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chaseDistance: 10
+  chaseDistance: 15
+  exploreRadius: 10
+  idleDuration: 2
+  maxTimeToReachPoint: 10
+--- !u!114 &6157605124750311490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020160383712319719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96610c1022aa477458f76f9849f5f85f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

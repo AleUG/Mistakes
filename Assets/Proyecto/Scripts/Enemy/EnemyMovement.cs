@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
@@ -92,17 +94,31 @@ public class EnemyMovement : MonoBehaviour
         if (other.CompareTag("Door"))
         {
             Animator doorAnimator = other.GetComponent<Animator>();
-            Interactable interactDoor = other.GetComponent<Interactable>();
+            Interactable doorInteractable = other.GetComponent<Interactable>();
+            Door door = other.GetComponent<Door>();
 
-            if (doorAnimator != null)
+            if (doorAnimator != null && !door.isLocked && doorInteractable.isOpen == false)
             {
-                doorAnimator.SetTrigger("Open");
-                interactDoor.isOpen = true;
+                doorAnimator.SetTrigger("OpenEnemy");
+                doorInteractable.isOpen = true;
+
+                // Obtener la duración de la animación
+                AnimationClip[] clips = doorAnimator.runtimeAnimatorController.animationClips;
+
+                // Programar la acción para establecer isOpen en false después de la duración de la animación
+                StartCoroutine(CloseDoorAfterDelay(2f, doorInteractable));
             }
-            else
-            {
-                interactDoor.isOpen = false;
-            }
+        }
+    }
+
+    private IEnumerator CloseDoorAfterDelay(float delay, Interactable interactable)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Establecer isOpen en false después de la animación
+        if (interactable != null)
+        {
+            interactable.isOpen = false;
         }
     }
 

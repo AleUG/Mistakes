@@ -147,7 +147,6 @@ public class Linterna : MonoBehaviour
         batteryImage.fillAmount = batteryCharge;
     }
 
-    // Método para instanciar un enemigo
     void SpawnEnemigo()
     {
         if (colliders.Count > 0)
@@ -155,8 +154,8 @@ public class Linterna : MonoBehaviour
             // Escoge un collider aleatorio de la lista
             Collider randomCollider = colliders[Random.Range(0, colliders.Count)];
 
-            // Usa la posición del centro del collider como posición de aparición
-            Vector3 spawnPosition = randomCollider.bounds.center;
+            // Obtiene un punto aleatorio dentro del collider
+            Vector3 spawnPosition = GetRandomPointInCollider(randomCollider);
 
             // Instancia el enemigo en la posición especificada
             Instantiate(enemigoPrefab, spawnPosition, Quaternion.identity);
@@ -166,6 +165,18 @@ public class Linterna : MonoBehaviour
             // Si no hay colliders en la lista, utiliza una posición aleatoria como respaldo
             Vector3 spawnPosition = new Vector3(transform.position.x + 5f, transform.position.y, transform.position.z);
             Instantiate(enemigoPrefab, spawnPosition, Quaternion.identity);
+        }
+
+        Vector3 GetRandomPointInCollider(Collider collider)
+        {
+            // Obtiene un punto aleatorio dentro del collider usando las dimensiones del collider
+            Vector3 randomPoint = new Vector3(
+                Random.Range(collider.bounds.min.x, collider.bounds.max.x),
+                Random.Range(collider.bounds.min.y, collider.bounds.max.y),
+                Random.Range(collider.bounds.min.z, collider.bounds.max.z)
+            );
+
+            return randomPoint;
         }
     }
 

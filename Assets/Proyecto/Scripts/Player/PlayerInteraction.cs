@@ -57,6 +57,10 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         interactable.InteractLinterna();
                     }
+                    if (interactable.gameObject.name == "MóvilInteract")
+                    {
+                        interactable.InteractMovil();
+                    }
                     if (interactable.CompareTag("Note"))
                     {
                         interactable.InteractNote();

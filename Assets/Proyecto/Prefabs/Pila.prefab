@@ -64,10 +64,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 0}
   playerRender: {fileID: 0}
+  canvasNote: {fileID: 0}
+  activarCollider: {fileID: 0}
   isArmario: 0
   isPila: 1
   isDoor: 0
   isKey: 0
+  isLinterna: 0
+  isMovil: 0
+  isObstacle: 0
+  isNota: 0
+  isOpen: 0
 --- !u!54 &8757556506015362197
 Rigidbody:
   m_ObjectHideFlags: 0

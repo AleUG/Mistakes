@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private float nextStepTime; // Siguiente momento para reproducir un paso
 
     public bool canMove = true;
-
+    CursorLockMode lastCursorLockMode;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,8 +39,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if(Time.timeScale == 0) return;
         if (canMove)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            virtualCamera.enabled = true;
             // Obtener la dirección en la que mira la cámara
             Vector3 cameraForward = Camera.main.transform.forward;
             cameraForward.y = 0f; // Para evitar que el jugador salte hacia arriba
@@ -83,6 +86,13 @@ public class PlayerMovement : MonoBehaviour
                 DejarDeAgacharse();
             }
         }
+        else
+        {
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            virtualCamera.enabled = false;
+
+        }
     }
         
 
@@ -122,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("Walk", false);
             }
         }
-
         
     }
 

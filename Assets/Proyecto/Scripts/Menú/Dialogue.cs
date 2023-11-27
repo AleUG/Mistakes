@@ -72,21 +72,23 @@ public class Dialogue : MonoBehaviour
 
     private void NextDialogueLine()
     {
-        if(lineIndex +1 >= dialogueGroups[currentGroupIndex].dialogueLines.Length)
+        if (lineIndex + 1 >= dialogueGroups[currentGroupIndex].dialogueLines.Length)
         {
-            EndDialogue();
-            return ;
+            // Llamamos a la corrutina DelayAndEndDialogue en lugar de EndDialogue directamente
+            StartCoroutine(DelayAndEndDialogue());
+            return;
         }
-        else 
-        { 
+        else
+        {
             StartCoroutine(DelayTime());
         }
     }
 
+
     private IEnumerator ShowLines()
     {
         isWriting = true;
-        
+
         for (int i = 0; i < dialogueGroups[currentGroupIndex].dialogueLines[lineIndex].Length; i++)
         {
             dialogueText.text += dialogueGroups[currentGroupIndex].dialogueLines[lineIndex][i];
@@ -101,6 +103,7 @@ public class Dialogue : MonoBehaviour
 
         isWriting = false;
 
+        // Llamamos a NextDialogueLine al finalizar la escritura de la línea
         NextDialogueLine();
     }
 
@@ -122,14 +125,20 @@ public class Dialogue : MonoBehaviour
 
     private void EndDialogue()
     {
-        StartCoroutine(DelayAndEndDialogue());
         dialoguePanel.SetActive(false);
         boxCollider.enabled = true;
 
         if (currentGroupIndex < dialogueGroups.Length - 1)
         {
             currentGroupIndex++;
+            StartDialogue(); // Inicia el próximo grupo si hay más
         }
+        else
+        {
+            isDialogueInProgress = false;
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider collision)

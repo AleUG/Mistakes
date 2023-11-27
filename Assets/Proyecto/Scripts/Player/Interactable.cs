@@ -19,6 +19,7 @@ public class Interactable : MonoBehaviour
     public bool isDoor;
     public bool isKey;
     public bool isLinterna;
+    public bool isMovil;
     public bool isObstacle;
     public bool isNota;
 
@@ -36,6 +37,8 @@ public class Interactable : MonoBehaviour
     private Animator animator;
     private Inventario inventario;
     private Linterna linterna;
+    private Movil movil;
+    private EnemyAI enemyAI;
 
     private void Start()
     {
@@ -43,6 +46,8 @@ public class Interactable : MonoBehaviour
         animator = GetComponent<Animator>();
         inventario = FindObjectOfType<Inventario>();
         linterna = GameObject.FindGameObjectWithTag("Player").GetComponent<Linterna>();
+        movil = GameObject.Find("Player").GetComponent<Movil>();
+        enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
 
         if (canvasNote != null)
         {
@@ -68,13 +73,14 @@ public class Interactable : MonoBehaviour
             if (isEnter == true)
             {
                 playerMovement.enabled = false;
+                enemyAI.chaseDistance = 0.1f;
 
                 virtualCamera.gameObject.SetActive(true);
             }
             else if (isEnter == false)
             {
                 playerMovement.enabled = true;
-
+                enemyAI.ResetChaseDistance();
                 virtualCamera.gameObject.SetActive(false);
             }
 
@@ -207,6 +213,23 @@ public class Interactable : MonoBehaviour
                     audioNoteClose.Play();
                 }
             }
+        }
+    }
+
+    public void InteractMovil()
+    {
+        if(isMovil)
+        {
+            audioPickUp.Play();
+            movil.Unlock();
+       
+            if (activarCollider != null)
+            {
+                activarCollider.SetActive(true);
+            }
+
+            gameObject.SetActive(false);
+            Destroy(gameObject, 2.0f);
         }
     }
 

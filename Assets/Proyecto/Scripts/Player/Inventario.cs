@@ -29,8 +29,6 @@ public class Inventario : MonoBehaviour
     public void RecogerLlave(Key llave)
     {
         llavesRecolectadas++;
-        // Puedes realizar acciones adicionales aquí, como reproducir sonidos o mostrar mensajes.
-        Debug.Log("Llave recogida. Total de llaves: " + llavesRecolectadas);
     }
 
     // Método para gastar pilas
