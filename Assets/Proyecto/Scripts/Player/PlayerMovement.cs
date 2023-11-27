@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     public AudioSource[] pasosSound;
 
+    public CinemachineVirtualCamera virtualCamera;
+
     private float stepInterval = 0.55f; // Intervalo de tiempo entre pasos
     private float nextStepTime; // Siguiente momento para reproducir un paso
 
@@ -37,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (canMove)
+        {
             // Obtener la dirección en la que mira la cámara
             Vector3 cameraForward = Camera.main.transform.forward;
             cameraForward.y = 0f; // Para evitar que el jugador salte hacia arriba
@@ -78,42 +82,48 @@ public class PlayerMovement : MonoBehaviour
             {
                 DejarDeAgacharse();
             }
+        }
     }
         
 
     private void FixedUpdate()
     {
-        if (movementDirection.sqrMagnitude > 0.001f)
+        if (canMove)
         {
-            animator.SetBool("Walk", true);
-            movementDirection.Normalize();
-            if (Time.time >= nextStepTime)
+            if (movementDirection.sqrMagnitude > 0.001f)
             {
-                // Reproduce un sonido de paso y establece el próximo tiempo de paso
-                pasosSound[Random.Range(0, pasosSound.Length)].Play();
-                nextStepTime = Time.time + stepInterval;
-            }
+                animator.SetBool("Walk", true);
+                movementDirection.Normalize();
+                if (Time.time >= nextStepTime)
+                {
+                    // Reproduce un sonido de paso y establece el próximo tiempo de paso
+                    pasosSound[Random.Range(0, pasosSound.Length)].Play();
+                    nextStepTime = Time.time + stepInterval;
+                }
 
 
-           
-            // Mover al jugador en la dirección del movimiento
-            transform.position = transform.position + movementDirection * speed * Time.fixedDeltaTime;
 
-            if (Input.GetKey(KeyCode.LeftShift) && !isCroushed)
-            {
                 // Mover al jugador en la dirección del movimiento
-                transform.position = transform.position + movementDirection * runSpeed * Time.fixedDeltaTime;
-                stepInterval = 0.35f;
+                transform.position = transform.position + movementDirection * speed * Time.fixedDeltaTime;
+
+                if (Input.GetKey(KeyCode.LeftShift) && !isCroushed)
+                {
+                    // Mover al jugador en la dirección del movimiento
+                    transform.position = transform.position + movementDirection * runSpeed * Time.fixedDeltaTime;
+                    stepInterval = 0.35f;
+                }
+                else
+                {
+                    stepInterval = 0.55f;
+                }
             }
             else
             {
-                stepInterval = 0.55f;
+                animator.SetBool("Walk", false);
             }
         }
-        else
-        {
-            animator.SetBool("Walk", false);
-        }
+
+        
     }
 
     private void Agacharse()

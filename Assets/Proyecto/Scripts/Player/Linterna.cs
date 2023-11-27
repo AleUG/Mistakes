@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Linterna : MonoBehaviour
 {
     private KeyCode linternKey = KeyCode.F;
+    private GameObject linternaLight;
     private GameObject linternaObject;
     private AudioSource linternaAudio;
 
@@ -34,7 +35,10 @@ public class Linterna : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        linternaObject = GameObject.Find("LinternaLight");
+        linternaLight = GameObject.Find("LinternaLight");
+        linternaObject = GameObject.Find("LinternaObject");
+
+        linternaLight.SetActive(false);
         linternaObject.SetActive(false);
 
         linternaAudio = GameObject.Find("LinternaAudio").GetComponent<AudioSource>();
@@ -42,18 +46,38 @@ public class Linterna : MonoBehaviour
         batteryImage = GameObject.Find("BatteryCharge").GetComponent<Image>();
 
         inventario = FindObjectOfType<Inventario>();
+
+        Lock();
     }
 
     // Update is called once per frame
     void Update()
     {
+        LinternaVoid();
+
+        if (batteryCharge <= 0.35)
+        {
+            Animator animator = linternaLight.GetComponent<Animator>();
+            animator.SetTrigger("LowBattery");
+        }
+
+        // Verifica si la desesperación está por debajo del 80%
+        if (desesperacion < umbralDesesperacion)
+        {
+            EliminarAlucinaciones();
+        }
+
+    }
+
+    private void LinternaVoid()
+    {
         if (Input.GetKeyDown(linternKey) && batteryCharge >= 0)
         {
             // Cambia el estado de la linterna al presionar "F"
-            linternaObject.SetActive(!linternaObject.activeSelf);
+            linternaLight.SetActive(!linternaLight.activeSelf);
             linternaAudio.Play();
 
-            if (linternaObject.activeSelf)
+            if (linternaLight.activeSelf)
             {
                 isOn = true;
 
@@ -90,7 +114,7 @@ public class Linterna : MonoBehaviour
             {
                 // Si la batería está agotada, apaga la linterna
                 isOn = false;
-                linternaObject.SetActive(false);
+                linternaLight.SetActive(false);
             }
         }
         else
@@ -115,13 +139,6 @@ public class Linterna : MonoBehaviour
                 }
             }
         }
-
-        // Verifica si la desesperación está por debajo del 80%
-        if (desesperacion < umbralDesesperacion)
-        {
-            EliminarAlucinaciones();
-        }
-
     }
 
     public void RechargeBatery()
@@ -163,5 +180,19 @@ public class Linterna : MonoBehaviour
         }
 
         enemigoAparecido = false;  // Restablece la variable para permitir futuras apariciones
+    }
+
+    // Función para bloquear la linterna
+    public void Lock()
+    {
+        enabled = false;
+    }
+
+    // Función para desbloquear la linterna
+    public void Unlock()
+    {
+        enabled = true;
+        linternaObject.SetActive(true);
+        LinternaVoid();
     }
 }

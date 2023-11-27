@@ -15,17 +15,4 @@ public class EnemyDamage : MonoBehaviour
             }
         }
     }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            PlayerVida playerHealth = other.gameObject.GetComponent<PlayerVida>();
-            if (playerHealth != null)
-            {
-                playerHealth.RecibirDaño(damageAmount);
-            }
-        }
-    }
-
 }

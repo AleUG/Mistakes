@@ -1,10 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Cinemachine;
+using TMPro;
 
 public class Interactable : MonoBehaviour
 {
     public CinemachineVirtualCamera virtualCamera;
     public MeshRenderer playerRender;
+
+    public GameObject canvasNote; //Activar el CanvasNotes
+    public GameObject activarCollider; //Activar collider de Diálogo
 
     private PlayerMovement playerMovement;
     private bool isEnter = false;
@@ -13,28 +18,44 @@ public class Interactable : MonoBehaviour
     public bool isPila;
     public bool isDoor;
     public bool isKey;
+    public bool isLinterna;
+    public bool isObstacle;
+    public bool isNota;
 
     public bool isOpen = false;
 
     private AudioSource audioDoorOpen;
     private AudioSource audioDoorClose;
+    private AudioSource audioDoorClosed;
+
+    private AudioSource audioNoteOpen;
+    private AudioSource audioNoteClose;
+
+    private AudioSource audioPickUp;
 
     private Animator animator;
     private Inventario inventario;
+    private Linterna linterna;
 
     private void Start()
     {
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
         inventario = FindObjectOfType<Inventario>();
+        linterna = GameObject.FindGameObjectWithTag("Player").GetComponent<Linterna>();
+
+        if (canvasNote != null)
+        {
+            canvasNote.SetActive(false);
+        }
 
         //AudioSources
         audioDoorOpen = GameObject.Find("DoorAudioOpen").GetComponent<AudioSource>();
         audioDoorClose = GameObject.Find("DoorAudioClose").GetComponent<AudioSource>();
-    }
-
-    private void Update()
-    {
+        audioDoorClosed = GameObject.Find("DoorClosed").GetComponent<AudioSource>();
+        audioNoteOpen = GameObject.Find("AudioNoteOpen").GetComponent<AudioSource>();
+        audioNoteClose = GameObject.Find("AudioNoteClose").GetComponent<AudioSource>();
+        audioPickUp = GameObject.Find("LinternaPickUp").GetComponent<AudioSource>();
 
     }
 
@@ -65,7 +86,6 @@ public class Interactable : MonoBehaviour
             {
                 isEnter = false;
             }
-
         }
     }
 
@@ -74,6 +94,7 @@ public class Interactable : MonoBehaviour
         if (isPila && inventario.pilasActuales < inventario.pilasMáximas)
         {
             inventario.RecogerPila(1);
+            audioPickUp.Play();
             gameObject.SetActive(false);
             Destroy(gameObject, 2.0f);
         }
@@ -88,10 +109,10 @@ public class Interactable : MonoBehaviour
             if (keyScript != null)
             {
                 keyScript.Interact(); // Agrega un método en la clase Key para manejar la interacción.
+                audioPickUp.Play();
             }
 
             gameObject.SetActive(false);
-            Destroy(gameObject, 2.0f);
         }
     }
 
@@ -105,8 +126,8 @@ public class Interactable : MonoBehaviour
             // Verifica si la puerta está cerrada con llave.
             if (door.isLocked)
             {
-                Debug.Log("La puerta está cerrada con llave. Necesitas una llave para abrirla.");
                 animatorDoor.SetTrigger("Force");
+                audioDoorClosed.Play();
                 return;
             }
 
@@ -124,6 +145,77 @@ public class Interactable : MonoBehaviour
             }
         }
     }
+
+    public void InteractLinterna()
+    {
+        linterna.Unlock();
+        audioPickUp.Play();
+        gameObject.SetActive(false);
+        canvasNote.SetActive(true); // Activar collider de Tutorial
+        Destroy(gameObject, 2.0f);
+    }
+
+    public void InteractObstacle()
+    {
+        if (isObstacle)
+        {
+            Animator animatorObstacle = GetComponent<Animator>();
+            Door door = GetComponent<Door>();
+
+            if (door.isLocked)
+            {
+                audioDoorClosed.Play();
+                return;
+            }
+
+            if (isOpen == false)
+            {
+                isOpen = true;
+                audioDoorOpen.Play();
+                animatorObstacle.SetTrigger("Out");
+            }
+        }
+    }
+
+    public void InteractNote()
+    {
+        if (isNota)
+        {
+            PauseManager pauseManager = FindObjectOfType<PauseManager>();
+            Animator animator = canvasNote.GetComponent<Animator>();
+
+            // Verifica si el canvasNote está desactivado
+            if (!canvasNote.activeSelf)
+            {
+                canvasNote.SetActive(true);
+                audioNoteOpen.Play();
+
+                if (activarCollider != null)
+                {
+                    activarCollider.SetActive(true);
+                }
+
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    animator.SetTrigger("End");
+                    Invoke(nameof(DeactivateCanvasNote), 0.3f);
+                    pauseManager.ResumeGame();
+                    audioNoteClose.Play();
+                }
+            }
+        }
+    }
+
+
+    private void DeactivateCanvasNote()
+    {
+        canvasNote.SetActive(false);
+    }
+
 
     // Nuevo método para obtener los materiales asignados.
     public Material[] GetAssignedMaterials()

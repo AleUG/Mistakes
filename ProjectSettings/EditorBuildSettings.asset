@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: "Assets/Proyecto/Scenes/Men\xFAPrincipal.unity"
     guid: d1605b82fe0be214cbcca31abb377488
   - enabled: 1
-    path: Assets/Proyecto/Scenes/Testing.unity
-    guid: 554259cbf5adbaf4ca1e8d08f34ad8ef
+    path: Assets/Proyecto/Scenes/Level_1.unity
+    guid: c552153a01f0a5d4092ee16e0c255fff
   m_configObjects: {}

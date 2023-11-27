@@ -40,18 +40,32 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         interactable.InteractPila();
                     }
-                    else if (interactable.CompareTag("Door"))
+
+                    if (interactable.CompareTag("Door") && interactable.isDoor)
                     {
                         interactable.InteractDoor();
                     }
-                    else if (interactable.CompareTag("Key"))
+                    if (interactable.CompareTag("Door") && interactable.isObstacle)
+                    {
+                        interactable.InteractObstacle();
+                    }
+                    if (interactable.CompareTag("Key"))
                     {
                         interactable.InteractKey();
+                    }
+                    if (interactable.gameObject.name == "LinternaInteract")
+                    {
+                        interactable.InteractLinterna();
+                    }
+                    if (interactable.CompareTag("Note"))
+                    {
+                        interactable.InteractNote();
                     }
                     else
                     {
                         interactable.InteractArmario();
                     }
+
 
                 }
             }

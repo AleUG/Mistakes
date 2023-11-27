@@ -10,8 +10,8 @@ public class DialogueInteract : MonoBehaviour
     private bool isWriting = false;
 
     [SerializeField] private GameObject teclaContinue;
-    [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private GameObject dialoguePanelnteract;
+    [SerializeField] private TextMeshProUGUI dialogueTextInteract;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip typeSound;
 
@@ -22,9 +22,10 @@ public class DialogueInteract : MonoBehaviour
     private int lineIndex;
     private Coroutine typingCoroutine;
 
-    private float typingTime = 0.05f;
+    [SerializeField] private float typingTime = 0.05f;
 
     private PlayerMovement playerMovement;
+    private PlayerInteraction playerInteraction;
 
     [System.Serializable]
     public class DialogueGroup
@@ -41,6 +42,11 @@ public class DialogueInteract : MonoBehaviour
         boxCollider = GetComponent<BoxCollider>();
 
         playerMovement = FindObjectOfType<PlayerMovement>();
+        playerInteraction = FindObjectOfType<PlayerInteraction>();
+
+        dialoguePanelnteract.SetActive(false);
+
+        playerMovement.canMove = true;
     }
 
     private void Update()
@@ -53,11 +59,11 @@ public class DialogueInteract : MonoBehaviour
             }
             else if (isWriting)
             {
+                // Si está escribiendo y se presiona E, mostrar todo el texto y detener la animación de escritura
                 StopCoroutine(typingCoroutine);
-                dialogueText.text = dialogueGroups[currentGroupIndex].dialogueLines[lineIndex];
+                dialogueTextInteract.text = dialogueGroups[currentGroupIndex].dialogueLines[lineIndex];
                 isWriting = false;
                 isPlayerRange = true;
-
                 teclaContinue.SetActive(true);
             }
             else
@@ -74,13 +80,14 @@ public class DialogueInteract : MonoBehaviour
         }
     }
 
+
     private void StartDialogue()
     {
         isDialogueInProgress = true;
         isPlayerRange = false;
 
-        dialoguePanel.SetActive(true);
-        dialogueText.text = string.Empty;
+        dialoguePanelnteract.SetActive(true);
+        dialogueTextInteract.text = string.Empty;
         boxCollider.enabled = false;
 
         if (playerMovement != null)
@@ -91,15 +98,20 @@ public class DialogueInteract : MonoBehaviour
         lineIndex = 0; // Iniciar con el primer elemento del grupo actual
 
         typingCoroutine = StartCoroutine(ShowLines());
+
+        if (playerInteraction != null)
+        {
+            playerInteraction.enabled = false;
+        }
     }
 
     private void NextDialogueLine()
     {
         lineIndex++;
-        dialogueText.text = string.Empty;
+        dialogueTextInteract.text = string.Empty;
         typingCoroutine = StartCoroutine(ShowLines());
 
-        if (dialoguePanel == true)
+        if (dialoguePanelnteract == true)
         {
             if (playerMovement != null)
             {
@@ -115,7 +127,7 @@ public class DialogueInteract : MonoBehaviour
 
         foreach (char ch in dialogueGroups[currentGroupIndex].dialogueLines[lineIndex])
         {
-            dialogueText.text += ch;
+            dialogueTextInteract.text += ch;
 
             if (typeSound != null && audioSource != null)
             {
@@ -127,11 +139,6 @@ public class DialogueInteract : MonoBehaviour
 
         isWriting = false;
 
-        if (playerMovement != null && lineIndex == dialogueGroups[currentGroupIndex].dialogueLines.Length - 1)
-        {
-            playerMovement.canMove = true;
-        }
-
         isPlayerRange = true;
 
 
@@ -140,7 +147,7 @@ public class DialogueInteract : MonoBehaviour
             teclaContinue.SetActive(true);
         }
 
-        if (dialoguePanel == true)
+        if (dialoguePanelnteract == true)
         {
             playerMovement.canMove = false;
         }
@@ -151,7 +158,7 @@ public class DialogueInteract : MonoBehaviour
     private void EndDialogue()
     {
         isDialogueInProgress = false;
-        dialoguePanel.SetActive(false);
+        dialoguePanelnteract.SetActive(false);
 
         teclaContinue.SetActive(false);
         isPlayerRange = false;
@@ -161,6 +168,12 @@ public class DialogueInteract : MonoBehaviour
         {
             playerMovement.canMove = true;  // Llama a la función CanMove de PlayerMovement
         }
+
+        if (playerInteraction != null)
+        {
+            playerInteraction.enabled = true;
+        }
+
 
         if (llave != null) // Añade esta condición para verificar si el objeto llave existe
         {
@@ -178,7 +191,6 @@ public class DialogueInteract : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             isPlayerRange = true;
-
         }
     }
 
@@ -187,7 +199,7 @@ public class DialogueInteract : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             isPlayerRange = false;
-
+            EndDialogue();
         }
     }
 }

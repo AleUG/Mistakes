@@ -12,7 +12,6 @@ public class Door : MonoBehaviour
         // Verifica si el jugador está interactuando con la puerta (por ejemplo, presionando la tecla E)
         if (Input.GetKeyDown(KeyCode.E))
         {
-            // Llama al método Unlock solo si la puerta está bloqueada y la llave pertenece a esta puerta
             if (isLocked && CheckKey())
             {
                 Unlock();
@@ -35,7 +34,6 @@ public class Door : MonoBehaviour
     public void Unlock()
     {
         isLocked = false;
-        // Puedes agregar aquí animaciones u otros efectos para indicar que la puerta está desbloqueada.
-        Debug.Log("La puerta ha sido desbloqueada.");
+
     }
 }

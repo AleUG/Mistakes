@@ -9,8 +9,10 @@ public class Dialogue : MonoBehaviour
     private bool isDialogueInProgress = false;
     private bool isWriting = false;
 
+    public bool isActivate = false;
+
     [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI dialogueText;
+    public TextMeshProUGUI dialogueText;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip typeSound;
     [SerializeField] private float timeDelay = 1.0f;
@@ -21,8 +23,6 @@ public class Dialogue : MonoBehaviour
     private Coroutine typingCoroutine;
 
     [SerializeField] float typingTime = 0.05f;
-
-    private PlayerMovement playerMovement;
 
     [System.Serializable]
     public class DialogueGroup
@@ -37,7 +37,15 @@ public class Dialogue : MonoBehaviour
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
-        playerMovement = FindObjectOfType<PlayerMovement>();
+
+        //Encontrar los GameObjects
+        dialoguePanel.SetActive(false);
+
+        if (isActivate)
+        {
+            gameObject.SetActive(false);
+        }
+
     }
 
     private void Update()
@@ -45,20 +53,6 @@ public class Dialogue : MonoBehaviour
         if (isPlayerRange && !isDialogueInProgress)
         {
             StartDialogue();
-        }
-
-        if (isDialogueInProgress && isWriting)
-        {
-            /*
-            if (lineIndex < dialogueGroups[currentGroupIndex].dialogueLines.Length - 1)
-            {
-                NextDialogueLine();
-            }
-            else
-            {
-                StartCoroutine(DelayAndEndDialogue());
-            }
-            */
         }
     }
 
@@ -71,10 +65,6 @@ public class Dialogue : MonoBehaviour
         dialogueText.text = string.Empty;
         boxCollider.enabled = false;
 
-        if (playerMovement != null)
-        {
-            playerMovement.canMove = false;
-        }
 
         lineIndex = 0; // Iniciar con el primer elemento del grupo actual
         typingCoroutine = StartCoroutine(ShowLines());
@@ -87,7 +77,8 @@ public class Dialogue : MonoBehaviour
             EndDialogue();
             return ;
         }
-        else { 
+        else 
+        { 
             StartCoroutine(DelayTime());
         }
     }
@@ -108,21 +99,7 @@ public class Dialogue : MonoBehaviour
             yield return new WaitForSeconds(typingTime);
         }
 
-
-
         isWriting = false;
-
-        /*
-        if (playerMovement != null && lineIndex == dialogueGroups[currentGroupIndex].dialogueLines.Length - 1)
-        {
-            playerMovement.canMove = true;
-        }
-
-        if (!isWriting)
-        {
-            StartCoroutine(DelayAndEndDialogue());
-        }
-        */
 
         NextDialogueLine();
     }
@@ -149,17 +126,6 @@ public class Dialogue : MonoBehaviour
         dialoguePanel.SetActive(false);
         boxCollider.enabled = true;
 
-        if (playerMovement != null)
-        {
-            playerMovement.canMove = true;
-        }
-
-        // Si deseas activar un objeto (por ejemplo, llave) al final del diálogo, descomenta las siguientes líneas:
-        // if (llave != null)
-        // {
-        //     llave.SetActive(true);
-        // }
-
         if (currentGroupIndex < dialogueGroups.Length - 1)
         {
             currentGroupIndex++;
@@ -168,19 +134,9 @@ public class Dialogue : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !isDialogueInProgress)
+        if (collision.gameObject.CompareTag("Player")  && !isDialogueInProgress)
         {
             isPlayerRange = true;
-            StartDialogue();
         }
-    }
-
-    private void OnTriggerExit(Collider collision)
-    {
-        /*
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            isPlayerRange = false;
-        }*/
     }
 }

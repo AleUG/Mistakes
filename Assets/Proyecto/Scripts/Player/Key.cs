@@ -7,12 +7,19 @@ public class Key : MonoBehaviour
     public bool hasKey = false;
     public Door associatedDoor; // Referencia directa a la puerta asociada
 
+    public GameObject desactivarObjetos;
+
     // Método para manejar la interacción con la llave
     public void Interact()
     {
         hasKey = true;
         // Puedes agregar aquí animaciones u otros efectos para indicar que la llave ha sido recogida.
         CollectKey();
+
+        if (desactivarObjetos != null)
+        {
+            desactivarObjetos.SetActive(false);
+        }
     }
 
     // Método para notificar al inventario que la llave ha sido recogida
