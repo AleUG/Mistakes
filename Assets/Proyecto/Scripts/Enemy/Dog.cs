@@ -26,15 +26,15 @@ public class Dog : MonoBehaviour
 
         if (distanciaAlJugador < radioActivación)
         {
-            if (playerMovement.isCroushed)
-            {
-                enemyAI.SetSleepingDog(true);
-                animator.SetBool("Alerta", false);
-            }
-            else
+            if (playerMovement.isRunning)
             {
                 enemyAI.SetSleepingDog(false);
                 animator.SetBool("Alerta", true);
+            }
+            else
+            {
+                enemyAI.SetSleepingDog(true);
+                animator.SetBool("Alerta", false);
             }
 
         }

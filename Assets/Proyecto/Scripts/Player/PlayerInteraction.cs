@@ -11,6 +11,9 @@ public class PlayerInteraction : MonoBehaviour
 
     private List<Interactable> interactablesInRange = new List<Interactable>();
     private Dictionary<Renderer, List<Material>> originalMaterials = new Dictionary<Renderer, List<Material>>();
+    bool isInArmario = false;
+    Interactable lastArmario = null;
+
 
     private void Start()
     {
@@ -20,7 +23,17 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, interactionRange, interactableLayer))
+        if (isInArmario)
+        {
+            textInteract.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.E)) { 
+                lastArmario.InteractArmario();
+                isInArmario = lastArmario.ArmarioState();
+                lastArmario = null;
+            }
+        }
+
+        else if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, interactionRange, interactableLayer))
         {
             textInteract.SetActive(true);
 
@@ -34,6 +47,8 @@ public class PlayerInteraction : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
+                
+                 
                 foreach (Interactable interactable in interactablesInRange)
                 {
                     if (interactable.CompareTag("Pila"))
@@ -77,9 +92,13 @@ public class PlayerInteraction : MonoBehaviour
                     }
                     else
                     {
+                        lastArmario = interactable;
                         interactable.InteractArmario();
+                        isInArmario = interactable.ArmarioState();
                     }
                 }
+                
+
             }
         }
         else

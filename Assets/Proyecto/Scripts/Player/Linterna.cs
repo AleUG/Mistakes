@@ -61,26 +61,24 @@ public class Linterna : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         LinternaVoid();
 
-        if (batteryCharge <= 0.35)
+        Animator animator = linternaLight.GetComponent<Animator>();
+
+        if (batteryCharge <= 0.15)
         {
-            Animator animator = linternaLight.GetComponent<Animator>();
             animator.SetTrigger("LowBattery");
         }
-
-
 
         // Verifica si la desesperación está por debajo del 80%
         if (desesperacion < umbralDesesperacion)
         {
             EliminarAlucinaciones();
         }
-
     }
+
 
     private void LinternaVoid()
     {
@@ -129,9 +127,10 @@ public class Linterna : MonoBehaviour
 
             if (batteryCharge <= 0.0f)
             {
+                Animator animator = linternaLight.GetComponent<Animator>();
                 // Si la batería está agotada, apaga la linterna
                 isOn = false;
-                linternaLight.SetActive(false);
+                animator.SetTrigger("LuzTenue");
             }
         }
         else
@@ -167,6 +166,7 @@ public class Linterna : MonoBehaviour
     {
         batteryCharge = 1.0f;
         batteryImage.fillAmount = batteryCharge;
+
     }
 
     void SpawnEnemigo()

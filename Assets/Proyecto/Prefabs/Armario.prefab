@@ -224,6 +224,7 @@ MonoBehaviour:
   player: {fileID: 0}
   canvasNote: {fileID: 0}
   activarCollider: {fileID: 0}
+  isEnter: 0
   isArmario: 1
   isPila: 0
   isDoor: 0
@@ -350,10 +351,100 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5854518554759071411, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5854518554759071411, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1632461345909407188, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1632461345909407188, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1183216730599557070, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1183216730599557070, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 768606303022802160, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 768606303022802160, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d8168a3f8816c88479a551a60e75d0ee,
         type: 3}
       propertyPath: m_Name
       value: Armario
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1667439646761118617, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1667439646761118617, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1667439646761118617, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00555
+      objectReference: {fileID: 0}
+    - target: {fileID: 1667439646761118617, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.02244
+      objectReference: {fileID: 0}
+    - target: {fileID: 8522418415314839801, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8522418415314839801, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8522418415314839801, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00556
+      objectReference: {fileID: 0}
+    - target: {fileID: 8522418415314839801, guid: d8168a3f8816c88479a551a60e75d0ee,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.02295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8168a3f8816c88479a551a60e75d0ee, type: 3}

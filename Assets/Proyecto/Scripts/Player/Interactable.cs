@@ -77,6 +77,7 @@ public class Interactable : MonoBehaviour
     {
         if (isArmario)
         {
+            
             animator.SetTrigger("Open");
 
             if (isEnter)
@@ -100,6 +101,11 @@ public class Interactable : MonoBehaviour
                 isEnter = true;
             }
         }
+    }
+
+    public bool ArmarioState()
+    {
+        return isEnter;
     }
 
     public void InteractPila()
@@ -268,7 +274,7 @@ public class Interactable : MonoBehaviour
 
     private IEnumerator ActivateGameObject()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
 
         player.SetActive(true);
     }

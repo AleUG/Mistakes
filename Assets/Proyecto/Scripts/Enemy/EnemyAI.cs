@@ -212,7 +212,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (playerMovement.isCroushed)
         {
-            chaseDistance = originalChaseDistance * 0.35f;
+            chaseDistance = originalChaseDistance * 0.5f;
         }
         else
         {
