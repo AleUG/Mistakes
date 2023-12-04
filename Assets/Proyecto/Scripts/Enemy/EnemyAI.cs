@@ -7,24 +7,41 @@ public class EnemyAI : MonoBehaviour
     private Transform player;
     public float chaseDistance = 10f;
     private float originalChaseDistance;
+    private float alucinatingChaseDistance = 12.5f;
+    private float dogAlertDistance = 14f;
+
     public float exploreRadius = 10f;
     public float idleDuration = 2.0f; // Tiempo en segundos que el enemigo se queda quieto
     public float maxTimeToReachPoint = 10f; // Tiempo máximo para llegar al punto de exploración
+
     private bool isExploring = false;
+    private bool isAlucinating = false;
+    private bool isDogSleeping = false;
+    private bool isWalking;
+    private bool isEnter;
+
     private Vector3 explorePoint;
     private float idleTimer = 0f;
     private float timeToReachPoint = 0f;
 
     private EnemyMovement enemyMovement;
+    private PlayerMovement playerMovement;
+    private Animator animator;
+
+    private AudioSource audioWalk;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerMovement = FindObjectOfType<PlayerMovement>();
 
         // Obtén la referencia al script EnemyMovement
         enemyMovement = GetComponent<EnemyMovement>();
         originalChaseDistance = chaseDistance;
+
+        audioWalk = GameObject.Find("PasosEnemy").GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
 
         // Inicia la exploración al comienzo
         Explore();
@@ -32,7 +49,6 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        // Verifica si el enemigo está activo a través del script EnemyMovement
         if (!enemyMovement.isActive) return;
 
         if (player != null)
@@ -48,7 +64,18 @@ public class EnemyAI : MonoBehaviour
             {
                 // Si no está persiguiendo al jugador, explora el entorno
                 Explore();
+
+                MovementChaseDistance();
             }
+        }
+
+        if (isWalking)
+        {
+            audioWalk.Play();
+        }
+        else
+        {
+            audioWalk.Stop();
         }
     }
 
@@ -59,8 +86,23 @@ public class EnemyAI : MonoBehaviour
 
         // Ajusta la velocidad del NavMeshAgent según la velocidad del script EnemyMovement
         navMeshAgent.speed = enemyMovement.moveSpeed;
+        
+        if (isAlucinating)
+        {
+            chaseDistance = alucinatingChaseDistance;
+        }
+        else if(!isDogSleeping)
+        {
+            chaseDistance = dogAlertDistance;
+        }
+        else
+        {
+            chaseDistance = originalChaseDistance;
+        }
 
         isExploring = false; // Detiene la exploración cuando persigue al jugador
+        isWalking = true;
+        animator.SetBool("Walk", true);
     }
 
     void Explore()
@@ -70,6 +112,13 @@ public class EnemyAI : MonoBehaviour
             // Encuentra un nuevo punto dentro del radio de exploración
             explorePoint = GetRandomPointInRadius(transform.position, exploreRadius);
             isExploring = true;
+
+            // Solo establece isWalking en true si no está ya caminando
+            if (!isWalking)
+            {
+                isWalking = true;
+                animator.SetBool("Walk", true);
+            }
 
             // Reinicia los temporizadores
             idleTimer = 0f;
@@ -85,17 +134,57 @@ public class EnemyAI : MonoBehaviour
         {
             // Se mueve hacia el punto de exploración
             navMeshAgent.SetDestination(explorePoint);
+            animator.SetBool("Walk", true);
 
             // Verifica si el enemigo tarda demasiado en llegar al punto y elige uno nuevo
             timeToReachPoint += Time.deltaTime;
             if (timeToReachPoint > maxTimeToReachPoint)
             {
                 isExploring = false;
+                isWalking = false;
+                animator.SetBool("Walk", false);
             }
         }
     }
 
-    void IdleForDuration()
+    private void MovementChaseDistance()
+    {
+        if (playerMovement.isMoving && !isAlucinating)
+        {
+            // Si el jugador está caminando, ajusta chaseDistance según tu lógica actual
+            chaseDistance = originalChaseDistance;
+
+            if (playerMovement.isRunning)
+            {
+                chaseDistance = originalChaseDistance * 1.15f;
+            }
+            else if (playerMovement.isCroushed)
+            {
+                chaseDistance = originalChaseDistance * 0.75f;
+            }
+        }
+        else if (isAlucinating)
+        {
+            // Configura chaseDistance durante la alucinación
+            chaseDistance = alucinatingChaseDistance;
+        }
+        else if (!isDogSleeping)
+        {
+            chaseDistance = dogAlertDistance;
+        }
+        else
+        {
+            // Resetea chaseDistance si el jugador no está caminando
+            ResetChaseDistance();
+        }
+
+        if (isEnter)
+        {
+            chaseDistance = 0.05f;
+        }
+    }
+
+    private void IdleForDuration()
     {
         // Se queda quieto por el tiempo especificado
         idleTimer += Time.deltaTime;
@@ -104,6 +193,8 @@ public class EnemyAI : MonoBehaviour
         if (idleTimer >= idleDuration)
         {
             isExploring = false;
+            isWalking = false;
+            animator.SetBool("Walk", false);
         }
     }
 
@@ -119,6 +210,29 @@ public class EnemyAI : MonoBehaviour
 
     public void ResetChaseDistance()
     {
-        chaseDistance = originalChaseDistance;
+        if (playerMovement.isCroushed)
+        {
+            chaseDistance = originalChaseDistance * 0.35f;
+        }
+        else
+        {
+            chaseDistance = originalChaseDistance;
+        }
     }
+
+    public void SetAlucinating(bool alucinating)
+    {
+        isAlucinating = alucinating;
+    }
+
+    public void SetSleepingDog(bool sleeping)
+    {
+        isDogSleeping = sleeping;
+    }
+
+    public void SetArmarioEnter(bool armarioEnter)
+    {
+        isEnter = armarioEnter;
+    }
+
 }

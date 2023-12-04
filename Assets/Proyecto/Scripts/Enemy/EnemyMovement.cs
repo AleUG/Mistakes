@@ -63,7 +63,6 @@ public class EnemyMovement : MonoBehaviour
                 }
                 else
                 {
-                    animator.SetBool("Walk", false);
                     animator.SetBool("Ataque", false);
 
                     // Activa el movimiento AI

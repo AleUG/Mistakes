@@ -1,13 +1,13 @@
+// EnemyAlucination.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAlucination : MonoBehaviour
 {
-    //private GameObject canvasSusto;
-
     private EnemyAI enemyAI;
-    // Start is called before the first frame update
+    public MeshRenderer meshDesactivate;
+
     void Start()
     {
         enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
@@ -15,22 +15,21 @@ public class EnemyAlucination : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            //canvasSusto.SetActive(true);
-
-            enemyAI.chaseDistance = 15;
+            // Si el enemigo no está persiguiendo, modifica chaseDistance y comienza el temporizador
+            enemyAI.SetAlucinating(true); // Indica al enemigo que está alucinando
+            meshDesactivate.enabled = false;
             StartCoroutine(ReturnChaseDistance());
-
         }
     }
 
     private IEnumerator ReturnChaseDistance()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(5);
 
-        enemyAI.ResetChaseDistance();
-        //canvasSusto.SetActive(false);
-        Destroy(gameObject);
+        enemyAI.SetAlucinating(false); // Indica al enemigo que ya no está alucinando
+
+        Destroy(gameObject, 0.1f);
     }
 }

@@ -2,17 +2,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 using TMPro;
+using System.Collections;
 
 public class Interactable : MonoBehaviour
 {
-    public CinemachineVirtualCamera virtualCamera;
-    public MeshRenderer playerRender;
+    public CinemachineVirtualCamera virtualCameraArmario;
+    public GameObject player;
 
     public GameObject canvasNote; //Activar el CanvasNotes
     public GameObject activarCollider; //Activar collider de Diálogo
 
     private PlayerMovement playerMovement;
-    private bool isEnter = false;
+    public bool isEnter = false;
 
     public bool isArmario;
     public bool isPila;
@@ -21,6 +22,7 @@ public class Interactable : MonoBehaviour
     public bool isLinterna;
     public bool isMovil;
     public bool isObstacle;
+    public bool isCajon;
     public bool isNota;
 
     public bool isOpen = false;
@@ -28,6 +30,8 @@ public class Interactable : MonoBehaviour
     private AudioSource audioDoorOpen;
     private AudioSource audioDoorClose;
     private AudioSource audioDoorClosed;
+    private AudioSource audioCajonOpen;
+    private AudioSource audioCajonClose;
 
     private AudioSource audioNoteOpen;
     private AudioSource audioNoteClose;
@@ -39,6 +43,7 @@ public class Interactable : MonoBehaviour
     private Linterna linterna;
     private Movil movil;
     private EnemyAI enemyAI;
+    private CinemachineVirtualCamera virtualCamera;
 
     private void Start()
     {
@@ -47,6 +52,8 @@ public class Interactable : MonoBehaviour
         inventario = FindObjectOfType<Inventario>();
         linterna = GameObject.FindGameObjectWithTag("Player").GetComponent<Linterna>();
         movil = GameObject.Find("Player").GetComponent<Movil>();
+        virtualCamera = GameObject.Find("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
+
         enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
 
         if (canvasNote != null)
@@ -61,6 +68,8 @@ public class Interactable : MonoBehaviour
         audioNoteOpen = GameObject.Find("AudioNoteOpen").GetComponent<AudioSource>();
         audioNoteClose = GameObject.Find("AudioNoteClose").GetComponent<AudioSource>();
         audioPickUp = GameObject.Find("LinternaPickUp").GetComponent<AudioSource>();
+        audioCajonOpen = GameObject.Find("CajónOpen").GetComponent<AudioSource>();
+        audioCajonClose = GameObject.Find("CajónClose").GetComponent<AudioSource>();
 
     }
 
@@ -70,27 +79,25 @@ public class Interactable : MonoBehaviour
         {
             animator.SetTrigger("Open");
 
-            if (isEnter == true)
+            if (isEnter)
             {
-                playerMovement.enabled = false;
-                enemyAI.chaseDistance = 0.1f;
+                playerMovement.canMove = true;
+                StartCoroutine(ActivateGameObject());
+                enemyAI.SetArmarioEnter(false);
 
-                virtualCamera.gameObject.SetActive(true);
-            }
-            else if (isEnter == false)
-            {
-                playerMovement.enabled = true;
-                enemyAI.ResetChaseDistance();
-                virtualCamera.gameObject.SetActive(false);
-            }
+                virtualCameraArmario.gameObject.SetActive(false);
 
-            if (isEnter == false)
-            {
-                isEnter = true;
-            }
-            else if (isEnter == true)
-            {
                 isEnter = false;
+            }
+            else
+            {
+                playerMovement.canMove = false;
+                player.SetActive(false);
+                enemyAI.SetArmarioEnter(true);
+
+                virtualCameraArmario.gameObject.SetActive(true);
+
+                isEnter = true;
             }
         }
     }
@@ -216,6 +223,26 @@ public class Interactable : MonoBehaviour
         }
     }
 
+    public void InteractCajon()
+    {
+        if (isCajon)
+        {
+            Animator animator = GetComponent<Animator>();
+            if (isOpen)
+            {
+                animator.SetTrigger("Close");
+                isOpen = false;
+                audioCajonClose.Play();
+            }
+            else
+            {
+                animator.SetTrigger("Open");
+                isOpen = true;
+                audioCajonOpen.Play();
+            }
+
+        }
+    }
     public void InteractMovil()
     {
         if(isMovil)
@@ -239,6 +266,12 @@ public class Interactable : MonoBehaviour
         canvasNote.SetActive(false);
     }
 
+    private IEnumerator ActivateGameObject()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        player.SetActive(true);
+    }
 
     // Nuevo método para obtener los materiales asignados.
     public Material[] GetAssignedMaterials()

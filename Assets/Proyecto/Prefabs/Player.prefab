@@ -582,7 +582,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7916115127198799410}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.595, y: -1.725, z: 30.357}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -719,10 +719,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   batteryDrainRate: 0.015
-  aumentoDesesperacionPorSegundo: 0.1
-  reduccionDesesperacionPorSegundo: 0.2
+  aumentoDesesperacionPorSegundo: 0.05
+  reduccionDesesperacionPorSegundo: 0.15
   umbralDesesperacion: 0.8
-  audioPulsaciones: {fileID: 0}
+  aumentoVelocidadLatido: 1
   colliders:
   - {fileID: 0}
   - {fileID: 0}

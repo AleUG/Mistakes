@@ -80,7 +80,6 @@ public class DialogueInteract : MonoBehaviour
         }
     }
 
-
     private void StartDialogue()
     {
         isDialogueInProgress = true;

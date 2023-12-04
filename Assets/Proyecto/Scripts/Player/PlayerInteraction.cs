@@ -45,22 +45,32 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         interactable.InteractDoor();
                     }
+
                     if (interactable.CompareTag("Door") && interactable.isObstacle)
                     {
                         interactable.InteractObstacle();
                     }
+
+                    if(interactable.CompareTag("Cajón"))
+                    {
+                        interactable.InteractCajon();
+                    }
+
                     if (interactable.CompareTag("Key"))
                     {
                         interactable.InteractKey();
                     }
+
                     if (interactable.gameObject.name == "LinternaInteract")
                     {
                         interactable.InteractLinterna();
                     }
+
                     if (interactable.gameObject.name == "MóvilInteract")
                     {
                         interactable.InteractMovil();
                     }
+
                     if (interactable.CompareTag("Note"))
                     {
                         interactable.InteractNote();
@@ -69,8 +79,6 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         interactable.InteractArmario();
                     }
-
-
                 }
             }
         }
@@ -124,7 +132,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + playerCamera.forward * interactionRange);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(transform.position, transform.position + playerCamera.forward * interactionRange);
     }
 }

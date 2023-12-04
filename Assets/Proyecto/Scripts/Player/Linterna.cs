@@ -23,13 +23,17 @@ public class Linterna : MonoBehaviour
     public float aumentoDesesperacionPorSegundo = 0.05f;
     public float reduccionDesesperacionPorSegundo = 0.25f; // Nueva tasa de reducción de desesperación
     public float umbralDesesperacion = 0.8f; // Punto de desesperación crítica
-    public AudioSource audioPulsaciones;
+
+    public float aumentoVelocidadLatido = 0.1f; // Ajusta este valor según sea necesario
+    private AudioSource audioLatidoCorazon;
 
     //SpawnEnemy
     public List<Collider> colliders;
     private bool enemigoAparecido = false;
     public GameObject enemigoPrefab;
     public float probabilidadAparicionEnemigo = 0.75f;
+
+    public bool isUnlock;
 
 
     // Start is called before the first frame update
@@ -47,7 +51,14 @@ public class Linterna : MonoBehaviour
 
         inventario = FindObjectOfType<Inventario>();
 
+        audioLatidoCorazon = GameObject.Find("HeartBeat").GetComponent<AudioSource>();
+
         Lock();
+
+        if (isUnlock)
+        {
+            Unlock();
+        }
     }
 
     // Update is called once per frame
@@ -60,6 +71,8 @@ public class Linterna : MonoBehaviour
             Animator animator = linternaLight.GetComponent<Animator>();
             animator.SetTrigger("LowBattery");
         }
+
+
 
         // Verifica si la desesperación está por debajo del 80%
         if (desesperacion < umbralDesesperacion)
@@ -110,6 +123,10 @@ public class Linterna : MonoBehaviour
             // Actualiza la imagen de la batería en el Canvas
             batteryImage.fillAmount = batteryCharge;
 
+            // Ajusta la velocidad del latido del corazón gradualmente cuando la linterna está encendida
+            float nuevaVelocidad = audioLatidoCorazon.pitch - Time.deltaTime * reduccionDesesperacionPorSegundo;
+            audioLatidoCorazon.pitch = Mathf.Clamp(nuevaVelocidad, 1.0f, 2.0f); // Ahora el pitch no excederá 2.0
+
             if (batteryCharge <= 0.0f)
             {
                 // Si la batería está agotada, apaga la linterna
@@ -122,6 +139,11 @@ public class Linterna : MonoBehaviour
             // Incrementa la desesperación mientras la linterna está apagada
             desesperacion += aumentoDesesperacionPorSegundo * Time.deltaTime;
             desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
+
+
+            // Ajusta la velocidad del latido del corazón según la desesperación
+            float nuevaVelocidad = 1.0f + aumentoVelocidadLatido * desesperacion;
+            audioLatidoCorazon.pitch = Mathf.Clamp(nuevaVelocidad, 1.0f, 2.0f); // Ahora el pitch no excederá 2.0
 
             // Verifica si la desesperación supera el umbral crítico
             if (!enemigoAparecido && desesperacion >= umbralDesesperacion)

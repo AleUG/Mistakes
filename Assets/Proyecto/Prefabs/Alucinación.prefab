@@ -242,3 +242,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96610c1022aa477458f76f9849f5f85f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshDesactivate: {fileID: 4559232774367321477}

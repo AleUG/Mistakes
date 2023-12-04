@@ -12,6 +12,9 @@ TagManager:
   - Escalera
   - "Alucinaci\xF3n"
   - Note
+  - "Caj\xF3n"
+  - Armario
+  - ColliderMovil
   layers:
   - Default
   - TransparentFX

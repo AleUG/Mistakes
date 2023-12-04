@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
 
     private bool isGrounded;
-    private bool isCroushed;
+    public bool isCroushed;
     private Vector3 movementDirection; // Guarda la dirección del movimiento
 
     private Rigidbody rb;
@@ -25,7 +25,13 @@ public class PlayerMovement : MonoBehaviour
     private float stepInterval = 0.55f; // Intervalo de tiempo entre pasos
     private float nextStepTime; // Siguiente momento para reproducir un paso
 
+    public bool isMoving;
+    public bool isRunning;
+    public bool isMovingAgachado;
+
     public bool canMove = true;
+
+    private EnemyAI enemyAI;
     CursorLockMode lastCursorLockMode;
     private void Start()
     {
@@ -35,15 +41,19 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         nextStepTime = Time.time; // Inicializa el próximo tiempo de paso
+
+        enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
     }
 
     private void Update()
     {
         if(Time.timeScale == 0) return;
+
         if (canMove)
         {
             Cursor.lockState = CursorLockMode.Locked;
             virtualCamera.enabled = true;
+
             // Obtener la dirección en la que mira la cámara
             Vector3 cameraForward = Camera.main.transform.forward;
             cameraForward.y = 0f; // Para evitar que el jugador salte hacia arriba
@@ -69,11 +79,6 @@ public class PlayerMovement : MonoBehaviour
                 {
                     pasosAudio.Stop();
                 }
-            }
-
-            if (isGrounded && Input.GetButtonDown("Jump"))
-            {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             }
 
             // Agacharse mientras se mantiene presionado Left Control
@@ -102,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (movementDirection.sqrMagnitude > 0.001f)
             {
+                isMoving = true;
                 animator.SetBool("Walk", true);
                 movementDirection.Normalize();
                 if (Time.time >= nextStepTime)
@@ -111,8 +117,6 @@ public class PlayerMovement : MonoBehaviour
                     nextStepTime = Time.time + stepInterval;
                 }
 
-
-
                 // Mover al jugador en la dirección del movimiento
                 transform.position = transform.position + movementDirection * speed * Time.fixedDeltaTime;
 
@@ -121,15 +125,19 @@ public class PlayerMovement : MonoBehaviour
                     // Mover al jugador en la dirección del movimiento
                     transform.position = transform.position + movementDirection * runSpeed * Time.fixedDeltaTime;
                     stepInterval = 0.35f;
+                    isRunning = true;
                 }
                 else
                 {
                     stepInterval = 0.55f;
+                    isRunning = false;
+
                 }
             }
             else
             {
                 animator.SetBool("Walk", false);
+                isMoving = false;
             }
         }
         
@@ -140,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
         speed = crouchSpeed; // Reducir velocidad al agacharse
         animator.SetBool("Agacharse", true);
         isCroushed = true;
+        stepInterval = 0.65f;
     }
 
     private void DejarDeAgacharse()

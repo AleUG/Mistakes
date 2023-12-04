@@ -7,7 +7,7 @@ public class Key : MonoBehaviour
     public bool hasKey = false;
     public Door associatedDoor; // Referencia directa a la puerta asociada
 
-    public GameObject desactivarObjetos;
+    public GameObject[] desactivarObjetos;
 
     // Método para manejar la interacción con la llave
     public void Interact()
@@ -18,7 +18,13 @@ public class Key : MonoBehaviour
 
         if (desactivarObjetos != null)
         {
-            desactivarObjetos.SetActive(false);
+            foreach (GameObject obj in desactivarObjetos)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(!obj.activeSelf);
+                }
+            }
         }
     }
 
