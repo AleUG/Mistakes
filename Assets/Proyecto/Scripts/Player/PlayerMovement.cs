@@ -93,8 +93,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            
-            Cursor.lockState = CursorLockMode.Locked;
             virtualCamera.enabled = false;
 
         }

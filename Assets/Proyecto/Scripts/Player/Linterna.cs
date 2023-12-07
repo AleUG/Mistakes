@@ -67,9 +67,29 @@ public class Linterna : MonoBehaviour
 
         Animator animator = linternaLight.GetComponent<Animator>();
 
-        if (batteryCharge <= 0.15)
+        if (batteryCharge <= 0.1f)
         {
             animator.SetTrigger("LowBattery");
+        }
+
+        if (batteryCharge <= 0.0f)
+        {
+            // Si la batería está agotada, apaga la linterna
+            isOn = false;
+            animator.SetBool("IsBatteryOn", false);
+            animator.SetTrigger("LuzTenue");
+        }
+        else
+        {
+            animator.SetBool("IsBatteryOn", true);
+            if (linternaLight.activeSelf)
+            {
+                isOn = true;
+            }
+            else
+            {
+                isOn = false;
+            }
         }
 
         // Verifica si la desesperación está por debajo del 80%
@@ -125,13 +145,6 @@ public class Linterna : MonoBehaviour
             float nuevaVelocidad = audioLatidoCorazon.pitch - Time.deltaTime * reduccionDesesperacionPorSegundo;
             audioLatidoCorazon.pitch = Mathf.Clamp(nuevaVelocidad, 1.0f, 2.0f); // Ahora el pitch no excederá 2.0
 
-            if (batteryCharge <= 0.0f)
-            {
-                Animator animator = linternaLight.GetComponent<Animator>();
-                // Si la batería está agotada, apaga la linterna
-                isOn = false;
-                animator.SetTrigger("LuzTenue");
-            }
         }
         else
         {

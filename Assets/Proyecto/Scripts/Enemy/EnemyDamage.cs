@@ -4,7 +4,7 @@ public class EnemyDamage : MonoBehaviour
 {
     public int damageAmount = 1;
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {

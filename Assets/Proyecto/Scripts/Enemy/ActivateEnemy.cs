@@ -23,7 +23,7 @@ public class ActivateEnemy : MonoBehaviour
 
     private IEnumerator DesactivateEnemy()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
         enemyActivate.SetActive(false);
     }
 }

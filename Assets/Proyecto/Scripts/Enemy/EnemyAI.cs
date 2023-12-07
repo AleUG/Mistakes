@@ -24,11 +24,14 @@ public class EnemyAI : MonoBehaviour
     private float idleTimer = 0f;
     private float timeToReachPoint = 0f;
 
+    private float stepSoundInterval = 0.4f; // Intervalo entre los sonidos de pasos
+    private float stepSoundTimer = 0f;
+
     private EnemyMovement enemyMovement;
     private PlayerMovement playerMovement;
     private Animator animator;
 
-    private AudioSource audioWalk;
+    [SerializeField] private AudioSource audioWalk;
 
     void Start()
     {
@@ -40,7 +43,6 @@ public class EnemyAI : MonoBehaviour
         enemyMovement = GetComponent<EnemyMovement>();
         originalChaseDistance = chaseDistance;
 
-        audioWalk = GameObject.Find("PasosEnemy").GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
 
         // Inicia la exploración al comienzo
@@ -69,9 +71,16 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        // Reproduce los pasos cada cierto intervalo de tiempo
         if (isWalking)
         {
-            audioWalk.Play();
+            stepSoundTimer += Time.deltaTime;
+
+            if (stepSoundTimer >= stepSoundInterval)
+            {
+                audioWalk.Play();
+                stepSoundTimer = 0f;
+            }
         }
         else
         {
@@ -186,17 +195,22 @@ public class EnemyAI : MonoBehaviour
 
     private void IdleForDuration()
     {
-        // Se queda quieto por el tiempo especificado
+        // Stay still for the specified time
         idleTimer += Time.deltaTime;
 
-        // Si ha pasado el tiempo de inactividad, deja de explorar
+        // If the idle time has passed, stop exploring
         if (idleTimer >= idleDuration)
         {
             isExploring = false;
-            isWalking = false;
-            animator.SetBool("Walk", false);
+            
+            idleTimer = 0f; // Reset the timer for future explorations
         }
+
+        isWalking = false;
+        // Move the line here to stop the animation after the complete idle duration
+        animator.SetBool("Walk", false);
     }
+
 
     Vector3 GetRandomPointInRadius(Vector3 center, float radius)
     {

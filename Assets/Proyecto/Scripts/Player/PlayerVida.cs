@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerVida : MonoBehaviour
 {
@@ -17,17 +18,25 @@ public class PlayerVida : MonoBehaviour
     private float damageImageStartTime = 0f; // Hora de inicio para el efecto de fade out
     private float damageImageDuration = 1f; // Duración del efecto de fade out
 
+    private GameObject enemyDesactivar;
+    private AudioSource screamerAudioSource;
+    private AudioSource music;
+
     public GameObject canvasGameOver;
+    private GameObject desactivarGameObject;
+    private Animator animator;
+    private PlayerMovement playerMovement;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        playerMovement = GetComponent<PlayerMovement>();
+        enemyDesactivar = GameObject.Find("Enemy");
 
-        // Desactiva todas las imágenes de daño al inicio
-        foreach (Image damageImage in damageImages)
-        {
-            damageImage.gameObject.SetActive(false);
-        }
+        music = GameObject.Find("Music").GetComponent<AudioSource>();
+        screamerAudioSource = GameObject.Find("ScreamerAudio").GetComponent<AudioSource>();
+        desactivarGameObject = GameObject.Find("PauseManager");
     }
 
     public void RecibirDaño(int cantidad)
@@ -41,10 +50,14 @@ public class PlayerVida : MonoBehaviour
 
         if (vidaActual <= 0)
         {
-            canvasGameOver.SetActive(true);
-            gameObject.SetActive(false);
+            playerMovement.canMove = false;
+            enemyDesactivar.SetActive(false);
+            animator.SetTrigger("Die");
+            screamerAudioSource.Play();
 
-            Cursor.lockState = CursorLockMode.Confined;
+            music.Stop();
+
+            StartCoroutine(Die());
 
             SetVidaMaxima();
         }
@@ -105,6 +118,17 @@ public class PlayerVida : MonoBehaviour
     public void SetVidaMaxima()
     {
         vidaActual = vidaMaxima;
+    }
+
+    private IEnumerator Die()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        canvasGameOver.SetActive(true);
+        desactivarGameObject.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
+
+
     }
 
     void Update()

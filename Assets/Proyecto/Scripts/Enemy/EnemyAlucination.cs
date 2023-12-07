@@ -1,4 +1,3 @@
-// EnemyAlucination.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +5,7 @@ using UnityEngine;
 public class EnemyAlucination : MonoBehaviour
 {
     private EnemyAI enemyAI;
-    public MeshRenderer meshDesactivate;
+    [SerializeField] private MeshRenderer[] meshDesactivate;
 
     void Start()
     {
@@ -19,10 +18,17 @@ public class EnemyAlucination : MonoBehaviour
         {
             // Si el enemigo no está persiguiendo, modifica chaseDistance y comienza el temporizador
             enemyAI.SetAlucinating(true); // Indica al enemigo que está alucinando
-            meshDesactivate.enabled = false;
+
+            // Desactiva cada MeshRenderer en el array
+            foreach (MeshRenderer meshRenderer in meshDesactivate)
+            {
+                meshRenderer.enabled = false;
+            }
+
             StartCoroutine(ReturnChaseDistance());
         }
     }
+
 
     private IEnumerator ReturnChaseDistance()
     {

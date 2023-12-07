@@ -43,7 +43,6 @@ public class Interactable : MonoBehaviour
     private Linterna linterna;
     private Movil movil;
     private EnemyAI enemyAI;
-    private CinemachineVirtualCamera virtualCamera;
 
     private void Start()
     {
@@ -52,7 +51,6 @@ public class Interactable : MonoBehaviour
         inventario = FindObjectOfType<Inventario>();
         linterna = GameObject.FindGameObjectWithTag("Player").GetComponent<Linterna>();
         movil = GameObject.Find("Player").GetComponent<Movil>();
-        virtualCamera = GameObject.Find("VirtualCamera").GetComponent<CinemachineVirtualCamera>();
 
         enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
 

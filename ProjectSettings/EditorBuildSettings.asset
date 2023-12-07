@@ -16,10 +16,10 @@ EditorBuildSettings:
     guid: c552153a01f0a5d4092ee16e0c255fff
   - enabled: 1
     path: Assets/Proyecto/Scenes/Level_2.unity
-    guid: cb27f7599a309794cbd1356c797cde4f
+    guid: 243b7bee10d9a2c45ac942a391af4e88
   - enabled: 1
     path: Assets/Proyecto/Scenes/Level_3.unity
-    guid: 3df14548ff105d64cb9ef0de13b8a773
+    guid: 0483d0177c9c5b848aff09bba4fedefe
   - enabled: 1
     path: "Assets/Proyecto/Scenes/Men\xFAFinal.unity"
     guid: d9726360b3239134e8831696f9cc02be

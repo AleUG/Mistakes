@@ -11,6 +11,8 @@ public class Movil : MonoBehaviour
     private AudioSource ringPhoneSound;
     private bool isCalling;
 
+    public bool isLocked;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -20,7 +22,10 @@ public class Movil : MonoBehaviour
         movil.SetActive(false);
         colliderMovil.SetActive(false);
 
-        enabled = false;
+        if (isLocked)
+        {
+            enabled = false;
+        }
     }
 
     // Update is called once per frame
