@@ -9,6 +9,7 @@ public class EnemyAI : MonoBehaviour
     private float originalChaseDistance;
     private float alucinatingChaseDistance = 12.5f;
     private float dogAlertDistance = 14f;
+    private float linternaOnDistance = 1.25f;
 
     public float exploreRadius = 10f;
     public float idleDuration = 2.0f; // Tiempo en segundos que el enemigo se queda quieto
@@ -30,6 +31,7 @@ public class EnemyAI : MonoBehaviour
     private EnemyMovement enemyMovement;
     private PlayerMovement playerMovement;
     private Animator animator;
+    private Linterna linterna;
 
     [SerializeField] private AudioSource audioWalk;
 
@@ -38,6 +40,7 @@ public class EnemyAI : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerMovement = FindObjectOfType<PlayerMovement>();
+        linterna = FindObjectOfType<Linterna>();
 
         // Obtén la referencia al script EnemyMovement
         enemyMovement = GetComponent<EnemyMovement>();
@@ -163,13 +166,29 @@ public class EnemyAI : MonoBehaviour
             // Si el jugador está caminando, ajusta chaseDistance según tu lógica actual
             chaseDistance = originalChaseDistance;
 
-            if (playerMovement.isRunning)
+            if(linterna.isOn)
             {
-                chaseDistance = originalChaseDistance * 1.15f;
+                if (playerMovement.isRunning)
+                {
+                    chaseDistance = originalChaseDistance * 1.15f * linternaOnDistance;
+
+                }
+                else if (playerMovement.isCroushed)
+                {
+                    chaseDistance = originalChaseDistance * 0.75f * linternaOnDistance;
+                }
             }
-            else if (playerMovement.isCroushed)
+            else
             {
-                chaseDistance = originalChaseDistance * 0.75f;
+                if (playerMovement.isRunning)
+                {
+                    chaseDistance = originalChaseDistance * 1.15f;
+
+                }
+                else if (playerMovement.isCroushed)
+                {
+                    chaseDistance = originalChaseDistance * 0.75f;
+                }
             }
         }
         else if (isAlucinating)
@@ -226,7 +245,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (playerMovement.isCroushed)
         {
-            chaseDistance = originalChaseDistance * 0.5f;
+            chaseDistance = originalChaseDistance * 0.35f;
+
+            if(linterna.isOn)
+            {
+                chaseDistance = originalChaseDistance * 0.5f;
+            }
         }
         else
         {

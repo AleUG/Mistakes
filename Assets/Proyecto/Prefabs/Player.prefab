@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: 7916115127198799416}
   - component: {fileID: 4609109173349953257}
   - component: {fileID: 7916115127198799419}
+  - component: {fileID: 1224912715348045032}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -724,6 +725,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   batteryDrainRate: 0.015
+  isOn: 0
   aumentoDesesperacionPorSegundo: 0.05
   reduccionDesesperacionPorSegundo: 0.15
   umbralDesesperacion: 0.8
@@ -735,6 +737,7 @@ MonoBehaviour:
     type: 3}
   probabilidadAparicionEnemigo: 0.75
   isUnlock: 0
+  canDrainBattery: 1
 --- !u!114 &4609109173349953257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,6 +766,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pilasActuales: 1
   "pilasM\xE1ximas": 5
+--- !u!114 &1224912715348045032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7916115127198799410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e424e8a3ce64ad48b60475f29b66e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanciaActivacion: 10
 --- !u!1 &7916115127347635695
 GameObject:
   m_ObjectHideFlags: 0

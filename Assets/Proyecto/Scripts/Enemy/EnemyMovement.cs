@@ -53,17 +53,11 @@ public class EnemyMovement : MonoBehaviour
                     if (directionToPlayer.magnitude <= attackDistance && canAttack == true)
                     {
                         isAttacking = true;
-                        animator.SetBool("Ataque", true);
                         moveSpeed = 0f;
-                    }
-                    else
-                    {
-                        animator.SetBool("Ataque", false);
                     }
                 }
                 else
                 {
-                    animator.SetBool("Ataque", false);
 
                     // Activa el movimiento AI
                     enemyAI.enabled = true;

@@ -15,6 +15,7 @@ TagManager:
   - "Caj\xF3n"
   - Armario
   - ColliderMovil
+  - Luz
   layers:
   - Default
   - TransparentFX

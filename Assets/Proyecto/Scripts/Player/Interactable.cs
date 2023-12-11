@@ -212,12 +212,14 @@ public class Interactable : MonoBehaviour
                     activarCollider.SetActive(true);
                 }
 
+                pauseManager.enabled = false;
                 Time.timeScale = 0f;
             }
             else
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    pauseManager.enabled = true;
                     animator.SetTrigger("End");
                     Invoke(nameof(DeactivateCanvasNote), 0.3f);
                     pauseManager.ResumeGame();

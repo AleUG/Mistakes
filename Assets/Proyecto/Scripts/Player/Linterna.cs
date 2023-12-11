@@ -14,7 +14,7 @@ public class Linterna : MonoBehaviour
     public float batteryDrainRate = 0.05f; // Tasa de agotamiento de la batería por segundo
 
     private Image batteryImage;
-    private bool isOn;
+    public bool isOn;
 
     private Inventario inventario;
 
@@ -34,6 +34,7 @@ public class Linterna : MonoBehaviour
     public float probabilidadAparicionEnemigo = 0.75f;
 
     public bool isUnlock;
+    public bool canDrainBattery = true;
 
 
     // Start is called before the first frame update
@@ -130,21 +131,22 @@ public class Linterna : MonoBehaviour
 
         if (isOn)
         {
-            // Reduce la carga de la batería con el tiempo
-            batteryCharge -= batteryDrainRate * Time.deltaTime;
-            batteryCharge = Mathf.Clamp01(batteryCharge); // Asegura que la carga esté en el rango [0, 1]
+            if(canDrainBattery)// Reduce la carga de la batería con el tiempo
+            {
+                batteryCharge -= batteryDrainRate * Time.deltaTime;
+                batteryCharge = Mathf.Clamp01(batteryCharge); // Asegura que la carga esté en el rango [0, 1]
 
-            // Añade la línea para reducir la desesperación mientras la linterna está encendida
-            desesperacion -= reduccionDesesperacionPorSegundo * Time.deltaTime;
-            desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
+                // Añade la línea para reducir la desesperación mientras la linterna está encendida
+                desesperacion -= reduccionDesesperacionPorSegundo * Time.deltaTime;
+                desesperacion = Mathf.Clamp01(desesperacion); // Asegura que la desesperación esté en el rango [0, 1]
 
-            // Actualiza la imagen de la batería en el Canvas
-            batteryImage.fillAmount = batteryCharge;
+                // Actualiza la imagen de la batería en el Canvas
+                batteryImage.fillAmount = batteryCharge;
 
-            // Ajusta la velocidad del latido del corazón gradualmente cuando la linterna está encendida
-            float nuevaVelocidad = audioLatidoCorazon.pitch - Time.deltaTime * reduccionDesesperacionPorSegundo;
-            audioLatidoCorazon.pitch = Mathf.Clamp(nuevaVelocidad, 1.0f, 2.0f); // Ahora el pitch no excederá 2.0
-
+                // Ajusta la velocidad del latido del corazón gradualmente cuando la linterna está encendida
+                float nuevaVelocidad = audioLatidoCorazon.pitch - Time.deltaTime * reduccionDesesperacionPorSegundo;
+                audioLatidoCorazon.pitch = Mathf.Clamp(nuevaVelocidad, 1.0f, 2.0f); // Ahora el pitch no excederá 2.0
+            }
         }
         else
         {
