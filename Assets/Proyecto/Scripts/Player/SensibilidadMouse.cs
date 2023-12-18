@@ -38,6 +38,7 @@ public class SensibilidadMouse : MonoBehaviour
         mouseY *= sensibilidad;
 
         // Ajustar la sensibilidad del movimiento de la cámara
+       
         pov.m_HorizontalAxis.m_MaxSpeed = sensibilidad;
         pov.m_VerticalAxis.m_MaxSpeed = sensibilidad;
     }

@@ -261,6 +261,11 @@ public class Interactable : MonoBehaviour
                 activarCollider.SetActive(true);
             }
 
+            if (canvasNote != null)
+            {
+                canvasNote.SetActive(true);
+            }
+
             gameObject.SetActive(false);
             Destroy(gameObject, 2.0f);
         }
